@@ -7,10 +7,20 @@ import play.api.data._
 
 object Application extends Controller with myAuth {
 
+  // TOP	///////////////////////////////////////////////////
   def index = Authenticated { implicit request =>
-     Ok(views.html.index(request.user))
+    Ok(views.html.index(request.user))
   }
 
+  // User	///////////////////////////////////////////////////
+  def user(id: String) = TODO
+
+  // Task	///////////////////////////////////////////////////
+  def taskTop = TODO
+
+  def task(id:Long) = TODO
+
+  // Login	///////////////////////////////////////////////////
   def login = Action { implicit request =>
     Ok(views.html.login(loginForm))
   }
