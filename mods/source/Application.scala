@@ -9,18 +9,16 @@ object Application extends Controller with myAuth {
 
   // TOP	///////////////////////////////////////////////////
   def index = Authenticated { implicit request =>
-    Ok(views.html.top())
+    Ok(views.html.index(request.user))
   }
 
   // User	///////////////////////////////////////////////////
-  def user = Authenticated { implicit request =>
-    Ok(views.html.userhome(request.session.get("user").get))
-  }
+  def user(id: String) = TODO
 
   // Task	///////////////////////////////////////////////////
-  def task(id: Long) = Authenticated { implicit request =>
-    Ok(views.html.review())
-  }
+  def taskTop = TODO
+
+  def task(id: Long) = TODO
 
   // Upload	///////////////////////////////////////////////////
   def upload = Action { implicit req =>
@@ -29,15 +27,12 @@ object Application extends Controller with myAuth {
 
   def uploaded = Action(parse.multipartFormData) { req =>
     req.body.file("source").map { src =>
-      println("Uploaded", src.filename, src.contentType)
-      if (src.filename.endsWith(".scala")) {
-        src.ref.moveTo(new java.io.File(s"./source/${src.filename}"), true)
-        Ok(views.html.upload("File uploaded"))
-      } else {
-        Ok(views.html.upload("拡張子がおかしいよ"))
-      }
+      println(src.filename, src.contentType)
+      val file = new java.io.File(s"./source/${src.filename}")
+      src.ref.moveTo(file,true)
+      Ok(views.html.upload("File uploaded"))
     }.getOrElse {
-      Ok(views.html.upload("ファイルが選ばれてないよ"))
+      Ok(views.html.upload("MISSING"))
     }
   }
 

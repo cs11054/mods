@@ -1,0 +1,29 @@
+@* top Template File *@
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@main("Tasks") {
+	
+	<div id="sidebar">
+		<ul>
+			@* TASKS *@
+		</ul>
+	</div>
+	
+	<div id="main">
+		
+		<div id="newpost">
+			@helper.form(action = routes.Application.uploaded, 'enctype -> "multipart/form-data") {
+				<input type="file" name="source">
+       			<input type="submit">
+       		}
+		</div>
+		
+		<div id="posts">
+			@* そのTASKに対する投稿たち *@
+		</div>
+		
+	</div>
+	
+}

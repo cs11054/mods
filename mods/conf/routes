@@ -6,11 +6,14 @@
 GET    /               controllers.Application.index
 
 # User
-GET    /user/:id       controllers.Application.user(id: String)
+GET    /user			controllers.Application.user
 
 # Task
-GET    /task           controllers.Application.taskTop
 GET    /task/:id       controllers.Application.task(id: Long)
+
+# Upload 後でいらんかも
+GET    /upload         controllers.Application.upload
+POST   /uploaded       controllers.Application.uploaded
 
 # Login
 GET    /login          controllers.Application.login
