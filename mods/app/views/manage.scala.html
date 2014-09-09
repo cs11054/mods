@@ -1,0 +1,69 @@
+@* top Template File *@
+@(msg:String)
+@import helper._
+@import helper.twitterBootstrap._
+
+@main("管理画面") {
+	
+	<div id="main">
+		<p>@msg</p>
+		<div id="addUser">
+                @form(routes.Manage.managed("addUser")) {
+                	id<input type="text" name="userId" value=""><br>
+                	password<input type="text" name="userPassword" value=""><br>
+                    <input type="submit" value="ユーザー登録">
+                }
+		</div>
+		
+		<br>
+		<div id="addSubject">
+                @form(routes.Manage.managed("addSubject")) {
+                	 課題名<input type="text" name="subjectName" value=""><br>
+                    <input type="submit" value="タスク登録">
+                }
+		</div>
+		
+		<div id="users">
+			@allUsers
+		</div>
+
+		<div id="sbujects">
+			@allSubjects
+		</div>
+		
+		
+	</div>
+}
+
+@users = @{Users.all()}
+@allUsers = {
+<p>登録ユーザー</p>
+	<ul>
+	@users.map{ user=>
+		<li>
+		@form(routes.Manage.managed("deleteUser")) {
+			@user.id	:	@{user.password}
+		 	<input type="hidden" name="dUserId" value="@user.id">
+         	<input type="submit" value="Delete">
+         }
+		</li>
+	}
+	</ul>
+}
+
+@subjects = @{Subjects.all()}
+@allSubjects = {
+<p>登録課題</p>
+<ul>
+	@subjects.map{ sbj=>
+		<li>
+		@form(routes.Manage.managed("deleteSubject")) {
+			@sbj.subjectid:@sbj.name
+			<input type="hidden" name="dSubjectId" value="@sbj.subjectid">
+			<input type="hidden" name="dSubjectName" value="@sbj.name">
+         	<input type="submit" value="Delete">
+		}
+		</li>
+	}
+</ul>
+}

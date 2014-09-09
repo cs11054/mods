@@ -9,16 +9,26 @@ object Users extends Table[User]("USER") with DBSupport {
 
   def id = column[String]("ID", O.PrimaryKey)
   def password = column[String]("PASSWORD", O.NotNull)
-  def ins = password ~ id
+  def ins = id ~ password
 
   def * = id ~ password <> (User, User.unapply _)
 
   def isRegistered(id: String, password: String): Boolean = connectDB {
-    Query(Users).list().exists(u => u.id == id && u.password == password)
+    Query(Users).list().exists(u => u.id == id)
   }
 
-  def addUser(id: String, password: String) = connectDB {
-    Users.ins.insert(id, password)
+  def add(id: String, password: String) = connectDB {
+    if (!isRegistered(id, password)) Users.ins.insert(id, password)
+    else 0
+  }
+
+  def delete(id: String) = connectDB {
+    if (id != "cs11054") Users.filter(_.id === id).delete
+    else 0
+  }
+
+  def all(): List[User] = connectDB {
+    Query(Users).sortBy(_.id).list
   }
 
 }

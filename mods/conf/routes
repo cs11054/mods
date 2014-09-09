@@ -12,8 +12,8 @@ GET    /user           controllers.Application.user
 GET    /task/:id       controllers.Application.task(id: Long)
 
 # Admin
-GET    /manage         controllers.Application.manage
-POST   /manage         controllers.Application.managed(kind:String)
+GET    /manage         controllers.Manage.manage(msg:String)
+POST   /manage         controllers.Manage.managed(kind:String)
 
 # Upload 後でいらんかも
 GET    /upload         controllers.Application.upload
