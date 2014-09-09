@@ -13,7 +13,10 @@ object Comments extends Table[Comment]("COMMENT") with DBSupport {
   def commentid = column[Int]("COMMENTID", O.PrimaryKey, O.NotNull, O.AutoInc)
   def body = column[String]("BODY")
   def date = column[String]("DATE", O.NotNull)
+  
   def * = subjectid ~ userid ~ taskid ~ commentid ~ body ~ date <> (Comment, Comment.unapply _)
 
+  
+  
 }
    

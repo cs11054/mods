@@ -10,9 +10,18 @@ import models.Users
 trait myAuth extends Controller {
 
   case class AuthenticatedRequest(val user: String, request: Request[AnyContent]) extends WrappedRequest(request)
+
   def Authenticated(f: AuthenticatedRequest => Result) = {
     Action { request =>
       request.session.get("user").map { user =>
+        f(AuthenticatedRequest(user, request))
+      }.getOrElse(Redirect(routes.Application.login()))
+    }
+  }
+
+  def Administor(f: AuthenticatedRequest => Result) = {
+    Action { request =>
+      request.session.get("user").filter(_ == "cs11054").map { user =>
         f(AuthenticatedRequest(user, request))
       }.getOrElse(Redirect(routes.Application.login()))
     }

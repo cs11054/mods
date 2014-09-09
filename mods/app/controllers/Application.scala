@@ -4,6 +4,11 @@ import play.api._
 import play.api.mvc._
 import play.api.data.Forms._
 import play.api.data._
+import play.api.data.validation.Constraints._
+import models.User
+import models.Subject
+import models.Users
+import models.Subjects
 
 object Application extends Controller with myAuth {
 
@@ -20,6 +25,25 @@ object Application extends Controller with myAuth {
   // Task	///////////////////////////////////////////////////
   def task(id: Long) = Authenticated { implicit request =>
     Ok(views.html.review())
+  }
+
+  // Manage	///////////////////////////////////////////////////
+  def manage = Administor { implicit request =>
+    Ok(views.html.manage())
+  }
+
+  def managed(kind: String) = Administor { implicit request =>
+    kind match {
+      case "addUser" =>
+        val (id, password) = Form(tuple("userid" -> nonEmptyText, "userpassword" -> nonEmptyText)).bindFromRequest.get
+        Users.addUser(id, password)
+        Ok(views.html.manage())
+      case "newTask" =>
+        val name = Form("subjectName" -> nonEmptyText).bindFromRequest.get
+        Subjects.addSubject(name)
+        Ok(views.html.manage())
+      case _ => throw new IllegalArgumentException()
+    }
   }
 
   // Upload	///////////////////////////////////////////////////

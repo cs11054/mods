@@ -6,10 +6,14 @@
 GET    /               controllers.Application.index
 
 # User
-GET    /user			controllers.Application.user
+GET    /user           controllers.Application.user
 
 # Task
 GET    /task/:id       controllers.Application.task(id: Long)
+
+# Admin
+GET    /manage         controllers.Application.manage
+POST   /manage         controllers.Application.managed(kind:String)
 
 # Upload 後でいらんかも
 GET    /upload         controllers.Application.upload
