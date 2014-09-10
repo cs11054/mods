@@ -3,26 +3,29 @@
 # ~~~~
 
 # Home page
-GET    /               controllers.Application.index
+GET    /                    controllers.Application.index
 
 # User
-GET    /user           controllers.Application.user
+GET    /user                controllers.Application.user
+
+# Subject
+GET    /subject/:sid        controllers.Application.subject(sid:Int)
 
 # Task
-GET    /task/:id       controllers.Application.task(id: Long)
+GET    /subject/:sid/:tid   controllers.Application.task(sid:Int,tid: String)
 
 # Admin
-GET    /manage         controllers.Manage.manage(msg:String)
-POST   /manage         controllers.Manage.managed(kind:String)
+GET    /manage              controllers.Manage.manage(msg:String="")
+POST   /manage              controllers.Manage.managed(kind:String)
 
 # Upload 後でいらんかも
-GET    /upload         controllers.Application.upload
-POST   /uploaded       controllers.Application.uploaded
+GET    /upload              controllers.Application.upload
+POST   /uploaded            controllers.Application.uploaded
 
 # Login
-GET    /login          controllers.Application.login
-POST   /login          controllers.Application.loginCheck
-POST   /logout         controllers.Application.logout
+GET    /login               controllers.Application.login
+POST   /login               controllers.Application.loginCheck
+POST   /logout              controllers.Application.logout
 
 # Map static resources from the /public folder to the /assets URL path
-GET    /assets/*file   controllers.Assets.at(path="/public", file)
+GET    /assets/*file        controllers.Assets.at(path="/public", file)

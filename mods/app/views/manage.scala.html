@@ -24,10 +24,12 @@
 		</div>
 		
 		<div id="users">
+		<p>登録ユーザー</p>
 			@allUsers
 		</div>
 
 		<div id="sbujects">
+		<p>登録課題</p>
 			@allSubjects
 		</div>
 		
@@ -37,7 +39,6 @@
 
 @users = @{Users.all()}
 @allUsers = {
-<p>登録ユーザー</p>
 	<ul>
 	@users.map{ user=>
 		<li>
@@ -53,7 +54,6 @@
 
 @subjects = @{Subjects.all()}
 @allSubjects = {
-<p>登録課題</p>
 <ul>
 	@subjects.map{ sbj=>
 		<li>

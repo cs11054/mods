@@ -1,14 +1,13 @@
 @* top Template File *@
-
+@(sid:Int)
 @import helper._
 @import helper.twitterBootstrap._
 
 @main("Tasks") {
 	
 	<div id="sidebar">
-		<ul>
-			@* TASKS *@
-		</ul>
+		<div id="subjects">
+		@allSubjects
 	</div>
 	
 	<div id="main">
@@ -21,9 +20,21 @@
 		</div>
 		
 		<div id="posts">
-			@* そのTASKに対する投稿たち *@
+			<p>投稿一覧</p>
 		</div>
 		
 	</div>
-	
+}
+
+@subjects = @{Subjects.all()}
+@allSubjects = {
+<ul>
+	@subjects.map{ sbj=>
+		<li>
+		@form(routes.Manage.managed("deleteSubject")) {
+		<a href="@routes.Application.subject(sbj.subjectid)" target="_blank">@sbj.name</a>
+		}
+		</li>
+	}
+</ul>
 }

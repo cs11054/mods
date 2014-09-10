@@ -14,7 +14,7 @@ object Application extends Controller with myAuth {
 
   // TOP	///////////////////////////////////////////////////
   def index = Authenticated { implicit request =>
-    Ok(views.html.top())
+    Redirect(routes.Application.subject(Subjects.newestNum))
   }
 
   // User	///////////////////////////////////////////////////
@@ -22,8 +22,13 @@ object Application extends Controller with myAuth {
     Ok(views.html.userhome(request.session.get("user").get))
   }
 
+  // Subject	///////////////////////////////////////////////
+  def subject(sid: Int) = Authenticated { implicit request =>
+    Ok(views.html.subject(sid))
+  }
+
   // Task	///////////////////////////////////////////////////
-  def task(id: Long) = Authenticated { implicit request =>
+  def task(sid: Int, tid: String) = Authenticated { implicit request =>
     Ok(views.html.review())
   }
 

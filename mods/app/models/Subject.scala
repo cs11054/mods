@@ -25,4 +25,8 @@ object Subjects extends Table[Subject]("SUBJECT") with DBSupport {
     Query(Subjects).sortBy(_.subjectid).list
   }
 
+  def newestNum(): Int = connectDB {
+    Query(Subjects.map(_.subjectid).max).first.getOrElse(-1)
+  }
+
 }
