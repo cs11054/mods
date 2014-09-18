@@ -9,6 +9,8 @@ import models.User
 import models.Subject
 import models.Users
 import models.Subjects
+import models.Task
+import models.Tasks
 
 object Application extends Controller with myAuth {
 
@@ -28,7 +30,7 @@ object Application extends Controller with myAuth {
   }
 
   // Task	///////////////////////////////////////////////////
-  def task(sid: Int, tid: String) = Authenticated { implicit request =>
+  def task(sid: Int, uid: String) = Authenticated { implicit request =>
     Ok(views.html.review())
   }
 
@@ -38,16 +40,33 @@ object Application extends Controller with myAuth {
   }
 
   def uploaded = Action(parse.multipartFormData) { req =>
+    // いきなりPOSTしてくるハッカー対策、必要か不明
+    if (req.session.get("user").isEmpty) BadRequest(views.html.subject(msg = "投稿に失敗しました。"))
+    // 形式がなぜか Map[String,Seq[String] なので、 Map[String,String] に変換
+    val reqDate = req.body.asFormUrlEncoded.map(m => m._1 -> m._2.head)
+
+    val sid = reqDate.get("sid").getOrElse(0).toString().forall(_.isDigit) match {
+      case true => reqDate.get("sid").getOrElse(0).toString().toInt
+      case false => 0
+    }
+
+    val user = reqDate.get("anonymous") match {
+      case Some(x) => ("A120" + req.session.get("user").get + sid).hashCode().toString
+      case None => req.session.get("user").get
+    }
+    val comment = reqDate.get("comment").getOrElse("")
+
     req.body.file("source").map { src =>
-      println("Uploaded", src.filename, src.contentType)
       if (src.filename.endsWith(".scala")) {
-        src.ref.moveTo(new java.io.File(s"./source/${src.filename}"), true)
-        Ok(views.html.upload("File uploaded"))
+        val n = Tasks.add(sid, user, comment)
+        println(s"File [${src.filename}] Uploaded to ${sid}/${user}_${n}")
+        src.ref.moveTo(new java.io.File(s"./source/${sid}/${user}_${n}.scala"), true)
+        Ok(views.html.subject(sid, "投稿しました。"))
       } else {
-        Ok(views.html.upload("拡張子がおかしいよ"))
+        BadRequest(views.html.subject(sid,"投稿に失敗しました。"))
       }
     }.getOrElse {
-      Ok(views.html.upload("ファイルが選ばれてないよ"))
+      BadRequest(views.html.subject(sid,"投稿に失敗しました。"))
     }
   }
 

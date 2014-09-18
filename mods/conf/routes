@@ -12,7 +12,7 @@ GET    /user                controllers.Application.user
 GET    /subject/:sid        controllers.Application.subject(sid:Int)
 
 # Task
-GET    /subject/:sid/:tid   controllers.Application.task(sid:Int,tid: String)
+GET    /subject/:sid/:uid   controllers.Application.task(sid:Int,uid: String)
 
 # Admin
 GET    /manage              controllers.Manage.manage(msg:String="")

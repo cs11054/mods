@@ -1,40 +1,58 @@
 @* top Template File *@
-@(sid:Int)
+@(sid:Int=Subjects.newestNum, msg:String = "")
 @import helper._
 @import helper.twitterBootstrap._
 
-@main("Tasks") {
-	
+@main(sname) {
+
 	<div id="sidebar">
 		<div id="subjects">
 		@allSubjects
 	</div>
-	
+
 	<div id="main">
-		
+	<p>@msg</p>
 		<div id="newpost">
 			@helper.form(action = routes.Application.uploaded, 'enctype -> "multipart/form-data") {
 				<input type="file" name="source">
+				<input type="checkbox" name="anonymous">匿名で投稿<br>
+				<textarea name="comment" placeholder="コメントを入力(例:速度重視で頑張ってみました。)"  cols="60"></textarea><br>
+				<input type="hidden" name="sid" value="@sid">
        			<input type="submit">
        		}
 		</div>
-		
+
 		<div id="posts">
-			<p>投稿一覧</p>
+			@allTasks
 		</div>
-		
+
 	</div>
 }
 
-@subjects = @{Subjects.all()}
+@subjects = @{Subjects.all().reverse}
+@sname = @{subjects.find(_.subjectid==sid).map(_.name).getOrElse("未登録課題")}
 @allSubjects = {
 <ul>
 	@subjects.map{ sbj=>
 		<li>
-		@form(routes.Manage.managed("deleteSubject")) {
-		<a href="@routes.Application.subject(sbj.subjectid)" target="_blank">@sbj.name</a>
-		}
+			@form(routes.Manage.managed("deleteSubject")) {
+				<a href="@routes.Application.subject(sbj.subjectid)" target="_blank">@sbj.name</a>
+			}
 		</li>
 	}
 </ul>
 }
+
+@tasks = @{Tasks.sbjAll(sid).reverse}
+@allTasks = {
+<ul>
+	@tasks.map{ tsk=>
+		<a href=@routes.Application.task(sid,tsk.userid)><li style="height:60px;border:solid 1px #CCC">
+			更新:@tsk.formatDate()<>投稿者:@tsk.userid<>@tsk.taskid<br>
+			@tsk.body
+		</li></a>
+	}
+</ul>
+}
+
+

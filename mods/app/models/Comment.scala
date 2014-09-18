@@ -10,7 +10,7 @@ object Comments extends Table[Comment]("COMMENT") with DBSupport {
   def subjectid = column[Int]("SUBJECTID", O.PrimaryKey, O.NotNull)
   def userid = column[String]("USERID", O.PrimaryKey, O.NotNull)
   def taskid = column[Int]("TASKID", O.PrimaryKey, O.NotNull)
-  def commentid = column[Int]("COMMENTID", O.PrimaryKey, O.NotNull, O.AutoInc)
+  def commentid = column[Int]("COMMENTID", O.PrimaryKey, O.NotNull)
   def body = column[String]("BODY")
   def date = column[Long]("DATE", O.NotNull)
   def isNew = column[Boolean]("NEW", O.NotNull)
