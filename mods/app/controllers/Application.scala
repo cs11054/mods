@@ -58,7 +58,7 @@ object Application extends Controller with myAuth {
     val comment = reqDate.get("comment").getOrElse("")
 
     req.body.file("source").map { src =>
-      if (src.filename.endsWith(".scala")) {
+      if (src.filename.endsWith(".java")) {
         val n = Tasks.add(sid, user, comment)
         println(s"File [${src.filename}] Uploaded to ${sid}/${user}_${n}")
         src.ref.moveTo(new java.io.File(s"${SAVE_PATH}/${sid}/${user}_${n}"), true)

@@ -4,7 +4,7 @@
 @import helper.twitterBootstrap._
 @import models.Tasks
 
-@main("ソースコード",styles=List("tab")) {
+@main("ソースコード",styles=List("tab","shCore","shThemeEmacs"),jss=List("shCore","shBrushJava")) {
 
 <div id="main">
 	<div id="code">
@@ -14,15 +14,18 @@
 	<div id="comments">
 		<ul>@** DBから取ってくる **@
 		</ul>
+		
 	</div>
 
 </div>
-
+<script type="text/javascript">
+     SyntaxHighlighter.all()
+</script>
 }
 
 @printCode2Tab = {
 	<ul class="tabs">
-	@for(i <- 0 until tasks.size){
+	@for(i <- 0 until tasks.size if(tasks(i)._2)!=None){
 		<li>
 			@if(i==0){
 				<input name="tab" id="tab@i" type="radio" checked />
@@ -35,7 +38,7 @@
 					@tasks(i)._1
 				</div>
 				<div class="code">
-					<pre>
+					<pre class="brush: java">
 @tasks(i)._2.map(_.mkString("\n"))
 					</pre>
 				</div>

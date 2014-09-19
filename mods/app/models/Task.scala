@@ -40,21 +40,22 @@ object Tasks extends Table[Task]("TASK") with DBSupport with Utilities {
     Query(Tasks).filter(t => t.subjectid === sid && t.userid === uid).sortBy(_.taskid).list
   }
 
-  def getCaptionAndCodeLines(sid: Int, uid: String): List[(String,Option[List[String]])] = {
+  def getCaptionAndCodeLines(sid: Int, uid: String): List[(String, Option[List[String]])] = {
     import controllers.Application.SAVE_PATH
     getTasks(sid, uid).map(t => t.body ->
-      using(Source.fromFile(s"${SAVE_PATH}/${t.subjectid}/${t.userid}_${t.taskid}")) {
-        _.getLines.toList
-      })
+      (if ((new File(s"${SAVE_PATH}/${t.subjectid}/${t.userid}_${t.taskid}")).exists()) {
+        using(Source.fromFile(s"${SAVE_PATH}/${t.subjectid}/${t.userid}_${t.taskid}")) { _.getLines.toList }
+      } else None))
   }
 
-  def add(subjectid: Int, userid: String, body: String) = connectDB {
+  def add(subjectid: Int, userid: String, body: String): Int = connectDB {
     val nextid = Query(Tasks).filter(t => t.subjectid === subjectid && t.userid === userid).list.size + 1
     val date = System.currentTimeMillis()
     Tasks.ins.insert(subjectid, userid, nextid, body, date)
+    nextid
   }
 
-  def delete(subjectid: Int, userid: String, taskid: Int) = connectDB {
+  def delete(subjectid: Int, userid: String, taskid: Int): Int = connectDB {
     Tasks.filter(t => t.subjectid === subjectid
       && t.userid === userid && t.taskid === taskid).delete
   }

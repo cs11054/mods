@@ -1,5 +1,7 @@
 package util
 
+import scala.io.Source
+
 trait Utilities {
   def using[A <: { def close() }, B](resource: A)(func: A => B): Option[B] =
     try {
@@ -11,4 +13,5 @@ trait Utilities {
     } finally {
       if (resource != null) resource.close()
     }
+
 }
