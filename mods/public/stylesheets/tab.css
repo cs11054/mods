@@ -5,7 +5,7 @@ body {
     position: relative;
     padding: 0;
 }
-.tabs li {
+.tabs>li {
     list-style: none;
     display: inline-block;
 }

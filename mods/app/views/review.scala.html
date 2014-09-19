@@ -4,7 +4,7 @@
 @import helper.twitterBootstrap._
 @import models.Tasks
 
-@main("ソースコード",styles=List("tab","shCore","shThemeEmacs"),jss=List("shCore","shBrushJava")) {
+@main("ソースコード",styles=List("tab","prettify"),jss=List("prettify","run_prettify")) {
 
 <div id="main">
 	<div id="code">
@@ -14,12 +14,14 @@
 	<div id="comments">
 		<ul>@** DBから取ってくる **@
 		</ul>
-		
+			
 	</div>
 
 </div>
 <script type="text/javascript">
-     SyntaxHighlighter.all()
+jQuery(function() {
+	prettyPrint();
+});
 </script>
 }
 
@@ -38,7 +40,7 @@
 					@tasks(i)._1
 				</div>
 				<div class="code">
-					<pre class="brush: java">
+					<pre class="prettyprint linenums">
 @tasks(i)._2.map(_.mkString("\n"))
 					</pre>
 				</div>
