@@ -1,12 +1,15 @@
-@* review Template File *@
+@(tasks:List[(String,Option[List[String]])])
 
 @import helper._
 @import helper.twitterBootstrap._
+@import models.Tasks
 
 @main("ソースコード") {
 
 <div id="main">
-	<div id="code">ソースコード</div>
+	<div id="code">ソースコード
+		@printCode2Tab	
+	</div>
 
 	<div id="comments">
 		<ul>@** DBから取ってくる **@
@@ -16,3 +19,30 @@
 </div>
 
 }
+
+@printCode2Tab = {
+	<ul class="tabs">
+	@for(i <- 0 until tasks.size){
+		<li>
+			@if(i==0){
+				<input name="tab" id="tab@i" type="radio" checked />
+			}else {
+				<input name="tab" id="tab@i" type="radio">
+			}
+			<label for="tab@i">コード@{i+1}</label>
+			<div class="contents tab@i">
+				<div class="caption">
+					@tasks(i)._1
+				</div>
+				<div class="code">
+					<pre>
+@tasks(i)._2.map(_.mkString("\n"))
+					</pre>
+				</div>
+			</div>
+			 
+		</li>
+	}
+	</ul>
+}
+

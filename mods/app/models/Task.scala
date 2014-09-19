@@ -3,6 +3,9 @@ package models
 import scala.slick.driver.H2Driver.simple._
 import Database.threadLocalSession
 import java.util.Date
+import util.Utilities
+import java.io.File
+import scala.io.Source
 
 case class Task(subjectid: Int, userid: String, taskid: Int, body: String, date: Long) {
 
@@ -13,7 +16,7 @@ case class Task(subjectid: Int, userid: String, taskid: Int, body: String, date:
 
 }
 
-object Tasks extends Table[Task]("TASK") with DBSupport {
+object Tasks extends Table[Task]("TASK") with DBSupport with Utilities {
 
   def subjectid = column[Int]("SUBJECTID", O.PrimaryKey, O.NotNull)
   def userid = column[String]("USERID", O.PrimaryKey, O.NotNull)
@@ -31,6 +34,18 @@ object Tasks extends Table[Task]("TASK") with DBSupport {
 
   def sbjAll(sid: Int): List[Task] = connectDB {
     Query(Tasks).filter(_.subjectid === sid).sortBy(_.date).list
+  }
+
+  def getTasks(sid: Int, uid: String): List[Task] = connectDB {
+    Query(Tasks).filter(t => t.subjectid === sid && t.userid === uid).sortBy(_.taskid).list
+  }
+
+  def getCaptionAndCodeLines(sid: Int, uid: String): List[(String,Option[List[String]])] = {
+    import controllers.Application.SAVE_PATH
+    getTasks(sid, uid).map(t => t.body ->
+      using(Source.fromFile(s"${SAVE_PATH}/${t.subjectid}/${t.userid}_${t.taskid}")) {
+        _.getLines.toList
+      })
   }
 
   def add(subjectid: Int, userid: String, body: String) = connectDB {
