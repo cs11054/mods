@@ -4,11 +4,11 @@
 @import helper.twitterBootstrap._
 @import models.Tasks
 
-@main("ソースコード") {
+@main("ソースコード",styles=List("tab")) {
 
 <div id="main">
-	<div id="code">ソースコード
-		@printCode2Tab	
+	<div id="code">
+			@printCode2Tab	
 	</div>
 
 	<div id="comments">
