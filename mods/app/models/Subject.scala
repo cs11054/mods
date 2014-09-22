@@ -35,6 +35,6 @@ object Subjects extends Table[Subject]("SUBJECT") with DBSupport {
   def all(): List[Subject] = allCache.get
 
   // 一番新しい課題の番号を取得、ないなら-1を返す
-  def newestNum(): Int = Some(allCache.get.map(_.subjectid).max).getOrElse(-1)
+  def newestNum(): Int = allCache.get.map(_.subjectid).sorted.headOption.getOrElse(-1)
 
 }
