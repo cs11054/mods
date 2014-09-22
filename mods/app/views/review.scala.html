@@ -1,4 +1,4 @@
-@(tasks:List[(String,Option[List[String]])])
+@(tasks:List[(String,String)],selectNum:Int)
 
 @import helper._
 @import helper.twitterBootstrap._
@@ -8,7 +8,7 @@
 
 <div id="main">
 	<div id="code">
-			@printCode2Tab	
+			@printCode2Tab(selectNum)
 	</div>
 
 	<div id="comments">
@@ -26,11 +26,11 @@ jQuery(function() {
 </script>
 }
 
-@printCode2Tab = {
+@printCode2Tab(selectNum:Int) = {
 	<ul class="tabs">
-	@for(i <- 0 until tasks.size if(tasks(i)._2)!=None){
+	@for((task,i) <- tasks.zipWithIndex){
 		<li>
-			@if(i==0){
+			@if(i==(selectNum-1)){
 				<input name="tab" id="tab@i" type="radio" checked />
 			}else {
 				<input name="tab" id="tab@i" type="radio">
@@ -38,15 +38,14 @@ jQuery(function() {
 			<label for="tab@i">コード@{i+1}</label>
 			<div class="contents tab@i">
 				<div class="caption">
-					@tasks(i)._1
+					@task._1
 				</div>
 				<div class="code">
 					<pre class="prettyprint linenums">
-@tasks(i)._2.map(_.mkString("\n"))
+@task._2
 					</pre>
 				</div>
 			</div>
-			 
 		</li>
 	}
 	</ul>

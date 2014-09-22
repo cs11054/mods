@@ -11,8 +11,11 @@ import models.Users
 import models.Subjects
 import models.Task
 import models.Tasks
+import util.Utilities
+import scala.io.Source
+import java.io.File
 
-object Application extends Controller with myAuth {
+object Application extends Controller with myAuth with Utilities {
 
   // TOP	///////////////////////////////////////////////////
   def index = Authenticated { implicit request =>
@@ -30,8 +33,8 @@ object Application extends Controller with myAuth {
   }
 
   // Task	///////////////////////////////////////////////////
-  def task(sid: Int, uid: String) = Authenticated { implicit request =>
-    Ok(views.html.review(Tasks.getCaptionAndCodeLines(sid, uid)))
+  def task(sid: Int, uid: String, tid: Int) = Authenticated { implicit request =>
+    Ok(views.html.review(Tasks.getCaptionAndCodeLines(sid, uid),tid))
   }
 
   // Upload	///////////////////////////////////////////////////
@@ -39,7 +42,6 @@ object Application extends Controller with myAuth {
     Ok(views.html.upload())
   }
 
-  val SAVE_PATH = "./source"
   def uploaded = Action(parse.multipartFormData) { req =>
     // いきなりPOSTしてくるハッカー対策、必要か不明
     if (req.session.get("user").isEmpty) BadRequest(views.html.subject(msg = "投稿に失敗しました。"))
@@ -55,13 +57,14 @@ object Application extends Controller with myAuth {
       case Some(x) => ("A120" + req.session.get("user").get + sid).hashCode().toString
       case None => req.session.get("user").get
     }
-    val comment = reqDate.get("comment").getOrElse("")
+    val caption = reqDate.get("caption").getOrElse("")
 
     req.body.file("source").map { src =>
       if (src.filename.endsWith(".java")) {
-        val n = Tasks.add(sid, user, comment)
-        println(s"File [${src.filename}] Uploaded to ${sid}/${user}_${n}")
-        src.ref.moveTo(new java.io.File(s"${SAVE_PATH}/${sid}/${user}_${n}"), true)
+        val body = using(Source.fromFile(src.ref.file.getAbsoluteFile())) { _.getLines.mkString("\n") } getOrElse ("")
+        src.ref.file.delete()
+        Tasks.add(sid, user, caption, body)
+        println(s"File [${src.filename}] Uploaded by ${req.session.get("user").get}")
         Ok(views.html.subject(sid, "投稿しました。"))
       } else {
         BadRequest(views.html.subject(sid, "投稿に失敗しました。"))

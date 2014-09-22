@@ -7,7 +7,7 @@ import util.Utilities
 import java.io.File
 import scala.io.Source
 
-case class Task(subjectid: Int, userid: String, taskid: Int, body: String, date: Long) {
+case class Task(subjectid: Int, userid: String, taskid: Int, caption: String, body: String, date: Long) {
 
   def formatDate(form: String = "yyyy/mm/dd hh:mm"): String = form match {
     case "yyyy/mm/dd hh:mm" => "%tY/%<tm/%<td %<tR" format new Date(date)
@@ -21,12 +21,13 @@ object Tasks extends Table[Task]("TASK") with DBSupport with Utilities {
   def subjectid = column[Int]("SUBJECTID", O.PrimaryKey, O.NotNull)
   def userid = column[String]("USERID", O.PrimaryKey, O.NotNull)
   def taskid = column[Int]("TASKID", O.PrimaryKey, O.NotNull)
+  def caption = column[String]("CAPTION")
   def body = column[String]("BODY")
   def date = column[Long]("DATE", O.NotNull)
 
-  def * = subjectid ~ userid ~ taskid ~ body ~ date <> (Task, Task.unapply _)
+  def * = subjectid ~ userid ~ taskid ~ caption ~ body ~ date <> (Task, Task.unapply _)
 
-  def ins = subjectid ~ userid ~ taskid ~ body ~ date
+  def ins = subjectid ~ userid ~ taskid ~ caption ~ body ~ date
 
   def all(): List[Task] = connectDB {
     Query(Tasks).sortBy(_.date).list
@@ -40,18 +41,14 @@ object Tasks extends Table[Task]("TASK") with DBSupport with Utilities {
     Query(Tasks).filter(t => t.subjectid === sid && t.userid === uid).sortBy(_.taskid).list
   }
 
-  def getCaptionAndCodeLines(sid: Int, uid: String): List[(String, Option[List[String]])] = {
-    import controllers.Application.SAVE_PATH
-    getTasks(sid, uid).map(t => t.body ->
-      (if ((new File(s"${SAVE_PATH}/${t.subjectid}/${t.userid}_${t.taskid}")).exists()) {
-        using(Source.fromFile(s"${SAVE_PATH}/${t.subjectid}/${t.userid}_${t.taskid}")) { _.getLines.toList }
-      } else None))
+  def getCaptionAndCodeLines(sid: Int, uid: String): List[(String, String)] = {
+    getTasks(sid, uid).map(t => (t.caption, t.body))
   }
 
-  def add(subjectid: Int, userid: String, body: String): Int = connectDB {
+  def add(subjectid: Int, userid: String, caption: String, body: String): Int = connectDB {
     val nextid = Query(Tasks).filter(t => t.subjectid === subjectid && t.userid === userid).list.size + 1
     val date = System.currentTimeMillis()
-    Tasks.ins.insert(subjectid, userid, nextid, body, date)
+    Tasks.ins.insert(subjectid, userid, nextid, caption, body, date)
     nextid
   }
 

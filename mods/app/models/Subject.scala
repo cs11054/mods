@@ -14,27 +14,19 @@ object Subjects extends Table[Subject]("SUBJECT") with DBSupport {
   def * = subjectid ~ name <> (Subject, Subject.unapply _)
   def ins = name returning subjectid
 
-  private[this] val allCache = new SyncVar[List[Subject]] { put(allHelper) }
-
-  private[this] def allHelper: List[Subject] = connectDB {
-    Query(Subjects).sortBy(_.subjectid).list
-  }
-
   def add(name: String) = connectDB {
-    val n = Subjects.ins.insert(name)
-    allCache.put(allHelper)
-    n
+    Subjects.ins.insert(name)
   }
 
   def delete(id: Int) = connectDB {
-    val n = Subjects.filter(_.subjectid === id).delete
-    allCache.put(allHelper)
-    n
+    Subjects.filter(_.subjectid === id).delete
   }
 
-  def all(): List[Subject] = allCache.get
+  def all(): List[Subject] = connectDB{
+    Query(Subjects).sortBy(_.subjectid).list
+  }
 
   // 一番新しい課題の番号を取得、ないなら-1を返す
-  def newestNum(): Int = allCache.get.map(_.subjectid).sorted.headOption.getOrElse(-1)
+  def newestNum(): Int = all().map(_.subjectid).lastOption.getOrElse(-1)
 
 }
