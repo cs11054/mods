@@ -1,0 +1,16 @@
+@(sid:Int,uid:String)
+@import helper._
+@import helper.twitterBootstrap._
+@import models.Comments
+
+<html>
+<head></head>
+	<body>
+		@form(routes.Application.pushIine(sid,uid)) {
+			<input type="submit" value="いいね！[@Iines.countIine(sid,uid)]">
+		}
+	</body>
+</html>
+	
+	
+

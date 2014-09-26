@@ -15,6 +15,8 @@ import util.Utilities
 import scala.io.Source
 import java.io.File
 import models.Comments
+import models.Comment
+import models.Iines
 
 object Application extends Controller with myAuth with Utilities {
 
@@ -35,12 +37,13 @@ object Application extends Controller with myAuth with Utilities {
 
   // Task	///////////////////////////////////////////////////
   def task(sid: Int, uid: String, tid: Int) = Authenticated { implicit request =>
-    Ok(views.html.review(sid, uid, tid))
+    Ok(views.html.task(sid, uid, tid))
   }
 
+  // Comment	///////////////////////////////////////////////
   def cmtPost(sid: Int, uid: String, tid: Int) = Authenticated { implicit req =>
     Form(tuple("body" -> text, "anonymous" -> optional(text))).bindFromRequest.fold(
-      formWithErrors => BadRequest(views.html.review(sid, uid, tid, "コメントの投稿に失敗しました。")),
+      formWithErrors => BadRequest(views.html.task(sid, uid, tid, "コメントの投稿に失敗しました。")),
       cmt => {
         val user = cmt._2 match {
           case Some(x) => ("A120" + sid + req.session.get("user").get).hashCode().toString()
@@ -48,8 +51,19 @@ object Application extends Controller with myAuth with Utilities {
         }
         println(user)
         Comments.add(sid, uid, user, cmt._1)
-        Ok(views.html.review(sid, uid, tid))
+        Ok(views.html.task(sid, uid, tid))
       })
+  }
+
+  def iine(sid: Int, uid: String) = Authenticated { implicit req =>
+    Ok(views.html.iine(sid, uid))
+  }
+
+  def pushIine(sid: Int, uid: String) = Authenticated { implicit req =>
+    val user = req.session.get("user").get
+    println(s"${user} push いいね at ${sid}/${uid}")
+    Iines.add(sid, uid, user)
+    Ok(views.html.iine(sid, uid))
   }
 
   // Upload	///////////////////////////////////////////////////

@@ -3,30 +3,32 @@
 # ~~~~
 
 # Home page
-GET    /                           controllers.Application.index
+GET    /                         controllers.Application.index
 
 # User
-GET    /user                       controllers.Application.user
+GET    /user                     controllers.Application.user
 
 # Subject
-GET    /subject/:sid               controllers.Application.subject(sid:Int)
+GET    /subject/:sid             controllers.Application.subject(sid:Int)
 
 # Task
 GET    /subject/:sid/:uid/:tid   controllers.Application.task(sid:Int,uid: String,tid:Int)
 POST   /subject/:sid/:uid/:tid   controllers.Application.cmtPost(sid:Int,uid: String,tid:Int)
+GET    /iine                     controllers.Application.iine(sid:Int,uid: String)
+POST   /iine                     controllers.Application.pushIine(sid:Int,uid: String)
 
 # Admin
-GET    /manage                     controllers.Manage.manage(msg:String="")
-POST   /manage                     controllers.Manage.managed(kind:String)
+GET    /manage                   controllers.Manage.manage(msg:String="")
+POST   /manage                   controllers.Manage.managed(kind:String)
 
 # Upload 後でいらんかも
-GET    /upload                     controllers.Application.upload
-POST   /uploaded                   controllers.Application.uploaded
+GET    /upload                   controllers.Application.upload
+POST   /uploaded                 controllers.Application.uploaded
 
 # Login
-GET    /login                      controllers.Application.login
-POST   /login                      controllers.Application.loginCheck
-POST   /logout                     controllers.Application.logout
+GET    /login                    controllers.Application.login
+POST   /login                    controllers.Application.loginCheck
+POST   /logout                   controllers.Application.logout
 
 # Map static resources from the /public folder to the /assets URL path
-GET    /assets/*file               controllers.Assets.at(path="/public", file)
+GET    /assets/*file             controllers.Assets.at(path="/public", file)

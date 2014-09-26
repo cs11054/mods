@@ -11,8 +11,11 @@
 	<div id="codes">
 		@printCode2Tab(tid)	
 	</div>
-
+	
 	<hr>
+
+	<iframe src="@routes.Application.iine(sid,uid)">
+	</iframe>
 
 	<div id="comments">
 		@printComment()
@@ -38,7 +41,7 @@
 		@for(cmt <- comments){
 			<li class="comment">
 				@cmt.formatDate()
-				@cmt.postuser
+				@cmt.postUser
 				<pre>@cmt.body</pre>
 			</li>
 		}	
