@@ -1,53 +1,81 @@
-@(tasks:List[(String,String)],selectNum:Int)
+@(sid:Int,uid:String,tid:Int,msg:String="")
 
 @import helper._
 @import helper.twitterBootstrap._
 @import models.Tasks
 
-@main("ソースコード",styles=List("tab","prettify"),jss=List("prettify")) {
+@main("ソースコード",styles=List("tab","prettify","code"),jss=List("prettify","tab")) {
 
 <div id="main">
-	<div id="code">
-			@printCode2Tab(selectNum)
+	<p>@msg</p>
+	<div id="codes">
+		@printCode2Tab(tid)	
 	</div>
+
+	<hr>
 
 	<div id="comments">
-		<ul>@** DBから取ってくる **@
-		</ul>
-			
+		@printComment()
 	</div>
 
+	@form(routes.Application.cmtPost(sid,uid,tid)) {
+		<p>コメントの投稿</p>
+		<input type="checkbox" name="anonymous" value="anony">匿名で投稿<br>
+		<textarea name="body" placeholder="コメントを入力(例:4行目の宣言はregistではなくregistrationが適切だと思います。)"  cols="60"></textarea><br>
+		<input type="submit" value="投稿">
+	}
+
 </div>
-<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
-<script type="text/javascript">
-jQuery(function() {
-	prettyPrint();
-});
-</script>
+
+@prettyPrintDecl()
+
 }
 
-@printCode2Tab(selectNum:Int) = {
-	<ul class="tabs">
-	@for((task,i) <- tasks.zipWithIndex){
-		<li>
-			@if(i==(selectNum-1)){
-				<input name="tab" id="tab@i" type="radio" checked />
-			}else {
-				<input name="tab" id="tab@i" type="radio">
-			}
-			<label for="tab@i">コード@{i+1}</label>
-			<div class="contents tab@i">
-				<div class="caption">
-					@task._1
-				</div>
-				<div class="code">
-					<pre class="prettyprint linenums">
-@task._2
-					</pre>
-				</div>
-			</div>
-		</li>
-	}
+@comments = @{Comments.commentsOfTask(sid,uid)}
+@printComment()={
+	<p>コメント一覧</p>
+	<ul>
+		@for(cmt <- comments){
+			<li class="comment">
+				@cmt.formatDate()
+				@cmt.postuser
+				<pre>@cmt.body</pre>
+			</li>
+		}	
 	</ul>
+}
+
+
+@prettyPrintDecl()={
+	<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+	<script type="text/javascript">
+		jQuery(function() {
+			prettyPrint();
+		});
+	</script>
+}
+
+@tasks = @{Tasks.getCaptionAndCodeLines(sid,uid).zipWithIndex}
+@printCode2Tab(selectNum:Int) = {
+	<ul id="tab">
+		@for((task,i) <- tasks){
+			<li @if(i==(selectNum-1)){class="selected"}>
+				<a href="#tab@i">コード@{i+1}</a>
+			</li>
+		} 
+	</ul>
+	<div id="detail">
+		@for((task,i) <- tasks){
+			<div id="tab@i" class="tabbox">
+			<div class="caption">
+					@task._1
+			</div>
+				<pre class="prettyprint linenums">
+@task._2
+				</pre>
+			</div>
+		}
+		
+	</div>
 }
 

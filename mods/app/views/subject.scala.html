@@ -12,14 +12,9 @@
 
 	<div id="main">
 	<p>@msg</p>
+	
 		<div id="newpost">
-			@helper.form(action = routes.Application.uploaded, 'enctype -> "multipart/form-data") {
-				<input type="file" name="source">
-				<input type="checkbox" name="anonymous">匿名で投稿<br>
-				<textarea name="caption" placeholder="コメントを入力(例:速度重視で頑張ってみました。)"  cols="60"></textarea><br>
-				<input type="hidden" name="sid" value="@sid">
-       			<input type="submit">
-       		}
+			@postForm
 		</div>
 
 		<div id="posts">
@@ -28,6 +23,17 @@
 
 	</div>
 }
+
+@postForm ={
+	@helper.form(action = routes.Application.uploaded, 'enctype -> "multipart/form-data") {
+			<input type="file" name="source">
+			<input type="checkbox" name="anonymous">匿名で投稿<br>
+			<textarea name="caption" placeholder="コメントを入力(例:速度重視で頑張ってみました。)"  cols="60"></textarea><br>
+			<input type="hidden" name="sid" value="@sid">
+   			<input type="submit">
+	}
+}
+
 
 @subjects = @{Subjects.all().reverse}
 @sname = @{subjects.find(_.subjectid==sid).map(_.name).getOrElse("未登録課題")}
@@ -43,7 +49,7 @@
 </ul>
 }
 
-@tasks = @{Tasks.sbjAll(sid).reverse}
+@tasks = @{Tasks.tasksOfSbj(sid).reverse}
 @allTasks = {
 <ul>
 	@tasks.map{ tsk=>

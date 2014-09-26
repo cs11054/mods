@@ -33,7 +33,7 @@ object Tasks extends Table[Task]("TASK") with DBSupport with Utilities {
     Query(Tasks).sortBy(_.date).list
   }
 
-  def sbjAll(sid: Int): List[Task] = connectDB {
+  def tasksOfSbj(sid: Int): List[Task] = connectDB {
     Query(Tasks).filter(_.subjectid === sid).sortBy(_.date).list
   }
 
