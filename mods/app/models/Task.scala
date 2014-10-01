@@ -34,7 +34,7 @@ object Tasks extends Table[Task]("TASK") with DBSupport with Utilities {
   }
 
   def tasksOfSbj(sid: Int): List[Task] = connectDB {
-    Query(Tasks).filter(_.subjectid === sid).sortBy(_.date).list
+    Query(Tasks).filter(_.subjectid === sid).sortBy(_.date.desc).list
   }
 
   def getTasks(sid: Int, uid: String): List[Task] = connectDB {

@@ -3,10 +3,52 @@
 @import helper._
 @import helper.twitterBootstrap._
 
-@main(id) {
+@main(id,styles=List("userhome")) {
 	
 	<div id="main">
-		アクティビティ、実装方法は不明		
+		
+		<div id ="mylog">
+			
+		</div>
+		
+		<div id="recvcomments">
+			@printRcvComment
+		</div>
+
+		<div id="postcomments">
+			@printPostComment
+		</div>
+
+		<div id="iines">
+		</div>
 	</div>
 	
+}
+
+@printPostComment={
+	<p>おくったコメント</p>
+	<ul>
+	@for(cmt <- Comments.postNComments(id,5)){
+		<li  class="outline">
+			<a href="@routes.Application.task(cmt.subjectid,cmt.userid,1)">
+				@cmt.formatDate()<br>
+				@cmt.subjectid/@cmt.userid<>@cmt.body
+			</a>
+		</li>
+	}
+	</ul>
+}
+
+@printRcvComment={
+	<p>もらったコメント</p>
+	<ul>
+	@for(cmt <- Comments.recvNewsAndRecentUntilN(id,5)){
+		<li class="outline">
+			@if(cmt.isNew){<span style="color:#F00">New!!</span>}<a href="@routes.Application.task(cmt.subjectid,cmt.userid,1)">
+			@cmt.postUser<>@cmt.formatDate()<br>
+			@cmt.subjectid/@cmt.userid<>@cmt.body
+			</a>
+		</li>
+	}
+	</ul>
 }

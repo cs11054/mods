@@ -32,19 +32,41 @@ object Comments extends Table[Comment]("COMMENT") with DBSupport {
 
   def commentsOfTask(sid: Int, uid: String): List[Comment] = connectDB {
     Query(Comments).filter(c => c.subjectid === sid && c.userid === uid)
-      .sortBy(_.date).list
+      .sortBy(_.date.desc).list
   }
 
   def add(subjectid: Int, userid: String, postUser: String, body: String) = connectDB {
     val nextid = Query(Comments).filter(t => t.subjectid === subjectid && t.userid === userid).list.size + 1
     val date = System.currentTimeMillis()
-    Comments.ins.insert(subjectid, userid, nextid, postUser, body, date, true)
+    Comments.ins.insert(subjectid, userid, nextid, postUser, body, date, userid != postUser)
     nextid
   }
 
   def delete(subjectid: Int, userid: String, commentID: Int) = connectDB {
     Comments.filter(c => c.subjectid === subjectid && c.userid === userid &&
       c.commentid === commentid).delete
+  }
+
+  def recvNewsAndRecentUntilN(id: String, n: Int): List[Comment] = connectDB {
+    val news = Query(Comments).filter(c => c.userid === id && c.isNew && c.postUser =!= id).sortBy(_.date.desc).list
+    val limit = if (n >= news.size) n - news.size else 0
+    val ret = news ::: Query(Comments).filter(c => c.userid === id && c.postUser =!= id && !c.isNew).sortBy(_.date.desc).take(limit).list
+    Query(Comments).filter(c => c.userid === id && c.isNew).map(_.isNew).update(false)
+    ret
+  }
+
+  def newComments(id: String): List[Comment] = connectDB {
+    val ret = Query(Comments).filter(c => c.userid === id && c.isNew && c.postUser =!= id).sortBy(_.date.desc).list
+    Query(Comments).filter(c => c.userid === id && c.isNew).map(_.isNew).update(false)
+    ret
+  }
+
+  def recvNComments(id: String, limit: Int): List[Comment] = connectDB {
+    Query(Comments).filter(c => c.userid === id && c.postUser =!= id).sortBy(_.date.desc).take(limit).list
+  }
+
+  def postNComments(id: String, limit: Int): List[Comment] = connectDB {
+    Query(Comments).filter(c => c.postUser === id).sortBy(_.date.desc).take(limit).list
   }
 
 }

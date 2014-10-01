@@ -49,7 +49,7 @@ object Application extends Controller with myAuth with Utilities {
           case Some(x) => ("A120" + sid + req.session.get("user").get).hashCode().toString()
           case None => req.session.get("user").get
         }
-        println(user)
+        println(s"${user}(${req.session.get("user").get}) Posted Comment to ${sid}/${uid}")
         Comments.add(sid, uid, user, cmt._1)
         Ok(views.html.task(sid, uid, tid))
       })

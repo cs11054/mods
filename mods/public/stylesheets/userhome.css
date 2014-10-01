@@ -1,0 +1,8 @@
+.outline {
+	width: 400px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	border: 1px solid #ccc;
+	padding: 10px;
+}

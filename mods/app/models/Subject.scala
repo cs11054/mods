@@ -23,7 +23,7 @@ object Subjects extends Table[Subject]("SUBJECT") with DBSupport {
   }
 
   def all(): List[Subject] = connectDB{
-    Query(Subjects).sortBy(_.subjectid).list
+    Query(Subjects).sortBy(_.subjectid.desc).list
   }
 
   // 一番新しい課題の番号を取得、ないなら-1を返す
