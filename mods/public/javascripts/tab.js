@@ -1,6 +1,4 @@
 $(function(){
-	$('.tabbox:first').show();
-	$('#tab li:first').addClass('active');
 	$('#tab li').click(function() {
 		$('#tab li').removeClass('active');
 		$(this).addClass('active');

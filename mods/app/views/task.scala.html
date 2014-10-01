@@ -62,14 +62,14 @@
 @printCode2Tab(selectNum:Int) = {
 	<ul id="tab">
 		@for((task,i) <- tasks){
-			<li @if(i==(selectNum-1)){class="selected"}>
+			<li @if(i==(selectNum-1)){class="selected active"}>
 				<a href="#tab@i">コード@{i+1}</a>
 			</li>
 		} 
 	</ul>
 	<div id="detail">
 		@for((task,i) <- tasks){
-			<div id="tab@i" class="tabbox">
+			<div id="tab@i" class="tabbox" @if(i==(selectNum-1)){style="display:block"}>
 			<div class="caption">
 					@task._1
 			</div>

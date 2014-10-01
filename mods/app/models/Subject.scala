@@ -27,6 +27,6 @@ object Subjects extends Table[Subject]("SUBJECT") with DBSupport {
   }
 
   // 一番新しい課題の番号を取得、ないなら-1を返す
-  def newestNum(): Int = all().map(_.subjectid).lastOption.getOrElse(-1)
+  def newestNum(): Int = all().map(_.subjectid).headOption.getOrElse(-1)
 
 }
