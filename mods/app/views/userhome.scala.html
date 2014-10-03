@@ -8,7 +8,7 @@
 	<div id="main">
 		
 		<div id ="mylog">
-			
+			@printPostTask
 		</div>
 		
 		<div id="recvcomments">
@@ -19,10 +19,40 @@
 			@printPostComment
 		</div>
 
-		<div id="iines">
+		<div id="recviines">
+			@printRecvIine
 		</div>
 	</div>
 	
+}
+
+@printPostTask = {
+	<p>投稿したファイル</p>
+		<ul>
+			@for(task <- Tasks.postNTasks(id,5)){
+			<li  class="outline">
+				<a href="@routes.Application.task(task.subjectid,task.userid,task.taskid)">
+					@task.formatDate()<br>
+					@task.subjectid/@task.userid<>@task.caption
+				</a>
+			</li>
+			}
+	</ul>
+
+}
+
+@printRecvIine = {
+	<p>新着イイね</p>
+	<ul>
+	@for(iine <- Iines.recvNewIines(id,5)){
+		<li class="outline">
+			@if(iine.isNew){<span style="color:#F00">New!!</span>}<a href="@routes.Application.task(iine.subjectid,iine.userid,1)">
+			@iine.pushUser<>@iine.formatDate()<br>
+			@iine.subjectid/@iine.userid
+			</a>
+		</li>
+	}
+	</ul>
 }
 
 @printPostComment={

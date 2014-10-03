@@ -52,6 +52,10 @@ object Tasks extends Table[Task]("TASK") with DBSupport with Utilities {
     nextid
   }
 
+  def postNTasks(id: String, limit: Int): List[Task] = connectDB {
+    Query(Tasks).filter(t => t.userid === id).sortBy(_.date.desc).take(limit).list
+  }
+
   def delete(subjectid: Int, userid: String, taskid: Int): Int = connectDB {
     Tasks.filter(t => t.subjectid === subjectid
       && t.userid === userid && t.taskid === taskid).delete
