@@ -20,11 +20,11 @@
     	<ul>
 			<li><a href="@routes.Application.index">TOP</a></li>
 			<li><a href="@routes.Application.user">ホーム</a></li>
+			<li><a href="#">&nbsp;</a></li>
+			<li id="haji"><a href="@routes.Application.logout">Logout</a></li>
 		</ul>
-		@form(routes.Application.logout) {
-			<input type="submit" value="Logout">
-		}
     </div>
+    <br>
     
     <div id="wrap">
         @content

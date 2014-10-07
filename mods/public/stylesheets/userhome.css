@@ -1,8 +1,52 @@
+/* データの概要を表示用 *******************/
 .outline {
 	width: 400px;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	overflow: hidden;
-	border: 1px solid #ccc;
 	padding: 10px;
 }
+
+h2 {
+	margin: 20px 10px 10px 0;
+	padding: 2px 8px;
+	border-width: 0 0 0 5px;
+	border-color: #7EBA03;
+	border-style: solid;
+	background: #BEDC81;
+	color: #5B8602;
+	line-height: 140%;
+	font-weight: bold;
+}
+
+table {
+	float: left;
+}
+
+td {
+	text-align: left;
+	vertical-align: top;
+}
+
+td ul {
+	list-style-type: none;
+	margin:0;
+	padding:0;
+}
+
+td li {
+	padding: 10px;
+	-moz-border-radius: 20px;
+	-webkit-border-radius: 20px;
+	border-radius: 20px;
+	margin: 10px;
+	background-color: #3498db;
+	color: #ecf0f1;
+	-moz-border-radius: 20px;
+}
+
+td a {
+	text-decoration: none;
+}
+
+/* データの概要を表示用終わり *******************/
