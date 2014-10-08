@@ -26,6 +26,7 @@
 }
 
 #subjects li a {
+		border-radius: 5px;
 	text-align: center;
 	margin: 10px;
 	padding: 10px;

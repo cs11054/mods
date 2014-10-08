@@ -3,7 +3,7 @@
 @import helper._
 @import helper.twitterBootstrap._
 
-@main(sname,styles=List("top")) {
+@main(sname,styles=List("subject")) {
 
 	<div id="sidebar">
 		<div id="subjects">
@@ -56,7 +56,7 @@
 	@tasks.map{ tsk=>
 		<a href=@routes.Application.task(sid,tsk.userid,tsk.taskid)><li>
 			@tsk.formatDate()<>投稿者:@tsk.userid<>@tsk.taskid<br>
-			@tsk.caption
+			<pre class="inline">@tsk.caption</pre>
 		</li></a>
 	}
 </ul>

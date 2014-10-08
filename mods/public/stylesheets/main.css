@@ -1,13 +1,45 @@
+/* 共通部分 *************************************/
+.inline {
+	display: inline;
+}
+/* 共通部分終わり *********************************/
+
 /* 中身の部分 **************************************/
+body,html { /*ページ全体*/
+	height: 99%;/* これでいいのだろうか… */
+}
+
+body {
+	background-color: #eceef9;
+}
 
 #wrap {
+	width: 100%;
+	position: relative;
+	height: auto !important;
+	height: 100%;
+	min-height: 100%;
+}
+
+#contents {
 	width: 800px;
+	padding-bottom: 60px;
 }
 
 /* 中身の部分終わり **********************************/
 
-/* ヘッダー *****************************************/
+/* フッター ***********************************/
+#footer {
+	height: 60px;
+	font-size: 8pt;
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+}
 
+/* フッター終わり ***********************************/
+
+/* ヘッダー *****************************************/
 #header ul {
 	margin: 0;
 	padding: 0;
@@ -28,8 +60,8 @@
 	border-bottom: 1px solid #474655;
 	background-color: #fff;
 	padding: 3px;
-	padding-left:20px;
-	padding-right:20px;
+	padding-left: 20px;
+	padding-right: 20px;
 	text-decoration: none;
 	color: #333;
 	width: 100px;
@@ -64,6 +96,4 @@
 	background-color: #F3D898;
 }
 
-
 /* ヘッダー終わり ***********************************/
-

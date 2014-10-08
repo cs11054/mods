@@ -4,7 +4,7 @@
 @import helper.twitterBootstrap._
 @import models.Tasks
 
-@main("ソースコード",styles=List("tab","prettify","code"),jss=List("prettify","tab")) {
+@main("ソースコード",styles=List("tab","prettify","task"),jss=List("prettify","tab")) {
 
 <div id="main">
 	<p>@msg</p>
@@ -14,7 +14,7 @@
 	
 	<hr>
 
-	<iframe src="@routes.Application.iine(sid,uid)">
+	<iframe src="@routes.Application.iine(sid,uid)" class="iineframe">
 	</iframe>
 
 	<div id="comments">
@@ -24,7 +24,7 @@
 	@form(routes.Application.cmtPost(sid,uid,tid)) {
 		<p>コメントの投稿</p>
 		<input type="checkbox" name="anonymous" value="anony">匿名で投稿<br>
-		<textarea name="body" placeholder="コメントを入力(例:4行目の宣言はregistではなくregistrationが適切だと思います。)"  cols="60"></textarea><br>
+		<textarea name="body" placeholder="コメントを入力(例:4行目のメソッド名はregistではなくregistrationが適切だと思います。)"  cols="60"></textarea><br>
 		<input type="submit" value="投稿">
 	}
 
@@ -70,12 +70,10 @@
 	<div id="detail">
 		@for((task,i) <- tasks){
 			<div id="tab@i" class="tabbox" @if(i==(selectNum-1)){style="display:block"}>
-			<div class="caption">
-					@task._1
-			</div>
+			<pre class="caption">
+@task._1</pre>
 				<pre class="prettyprint linenums">
-@task._2
-				</pre>
+@task._2</pre>
 			</div>
 		}
 		

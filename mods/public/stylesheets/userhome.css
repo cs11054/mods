@@ -1,26 +1,29 @@
 /* データの概要を表示用 *******************/
 .outline {
-	width: 400px;
+	width: 420px;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	overflow: hidden;
 	padding: 10px;
+	height: 56px;
+	line-height: 22pt;
 }
 
 h2 {
-	margin: 20px 10px 10px 0;
-	padding: 2px 8px;
-	border-width: 0 0 0 5px;
-	border-color: #7EBA03;
-	border-style: solid;
-	background: #BEDC81;
-	color: #5B8602;
-	line-height: 140%;
-	font-weight: bold;
+    background: none repeat scroll 0 0 #8e44ad;
+    border-color: #2ecc71;
+    border-style: solid;
+    border-width: 0 0 0 5px;
+    color: #ecf0f1;
+    font-weight: bold;
+    line-height: 140%;
+    margin: 20px 10px 10px 0;
+    padding: 2px 8px;
+    border-radius: 3px;
 }
 
 table {
-	float: left;
+	margin: 1em auto 1em 0;
 }
 
 td {
@@ -30,23 +33,41 @@ td {
 
 td ul {
 	list-style-type: none;
-	margin:0;
-	padding:0;
+	margin: 0;
+	padding: 0;
 }
 
 td li {
 	padding: 10px;
 	-moz-border-radius: 20px;
 	-webkit-border-radius: 20px;
-	border-radius: 20px;
+	border-radius: 18px;
 	margin: 10px;
-	background-color: #3498db;
+	background-color: #34495e;
 	color: #ecf0f1;
 	-moz-border-radius: 20px;
 }
 
 td a {
 	text-decoration: none;
+}
+
+.left {
+	float: left;
+}
+
+.right {
+	float: right;
+}
+
+.new {
+	color: #f1c40f;
+	font-weight: bold;
+	float: left;
+}
+
+.iine {
+	float: center;
 }
 
 /* データの概要を表示用終わり *******************/

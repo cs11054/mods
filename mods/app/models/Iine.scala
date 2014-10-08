@@ -39,9 +39,11 @@ object Iines extends Table[Iine]("IINE") with DBSupport {
     if (IINEed) Iines.ins.insert(sid, uid, pushUser, date, true)
   }
 
-  def recvNewIines(id: String, limit: Int): List[Iine] = connectDB {
-    val ret = Query(Iines).filter(i => i.userid === id && i.pushUser =!= id && i.isNew).sortBy(_.date.desc).list
-    Query(Iines).filter(i => i.userid === id && i.isNew).map(_.isNew).update(false)
+  def recvNewsAndRecentUntilN(id: String, n: Int): List[Iine] = connectDB {
+    val news = Query(Iines).filter(c => c.userid === id && c.isNew && c.pushUser =!= id).sortBy(_.date.desc).list
+    val limit = if (n >= news.size) n - news.size else 0
+    val ret = news ::: Query(Iines).filter(c => c.userid === id && c.pushUser =!= id && !c.isNew).sortBy(_.date.desc).take(limit).list
+    Query(Iines).filter(c => c.userid === id && c.isNew).map(_.isNew).update(false)
     ret
   }
 

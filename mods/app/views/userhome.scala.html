@@ -38,9 +38,9 @@
 		<ul>
 			@for(task <- Tasks.postNTasks(id,5)){
 				<a href="@routes.Application.task(task.subjectid,task.userid,task.taskid)">
-					<li>
-						@task.formatDate()<br>
-						@task.subjectid/@task.userid<>@task.caption
+					<li class="outline">
+						<span class="left">@Subjects.getTitle(task.subjectid)</span><span class="right">@task.formatDate()</span><br>
+						@task.caption
 					</li>
 				</a>
 			}
@@ -49,13 +49,13 @@
 }
 
 @printRecvIine = {
-	<h2>新着イイね</h2>
+	<h2>もらったイイね</h2>
 	<ul>
-	@for(iine <- Iines.recvNewIines(id,5)){
+	@for(iine <- Iines.recvNewsAndRecentUntilN(id,5)){
 		<a href="@routes.Application.task(iine.subjectid,iine.userid,1)">
-			<li class="outline">
-				@if(iine.isNew){<span style="color:#F00">New!!</span>}@iine.pushUser<>@iine.formatDate()<br>
-				@iine.subjectid/@iine.userid
+			<li class="outline iine">
+				<span class="left">@if(iine.isNew){<span class="new">New!!</span>&nbsp;}@Subjects.getTitle(iine.subjectid)</span>
+				<span class="right">@iine.formatDate()</span><br>
 			</li>
 		</a>
 	}
@@ -63,13 +63,13 @@
 }
 
 @printPostComment={
-	<h2>おくったコメント</h2>
+	<h2>投稿したコメント</h2>
 	<ul>
 	@for(cmt <- Comments.postNComments(id,5)){
 		<a href="@routes.Application.task(cmt.subjectid,cmt.userid,1)">
 			<li  class="outline">
-				@cmt.formatDate()<br>
-				@cmt.subjectid/@cmt.userid<>@cmt.body
+				<span class="left">@Subjects.getTitle(cmt.subjectid)&nbsp;[@cmt.userid]</span><span class="right">@cmt.formatDate()</span><br>
+				@cmt.body
 			</li>
 		</a>
 	}
@@ -82,8 +82,9 @@
 	@for(cmt <- Comments.recvNewsAndRecentUntilN(id,5)){
 		<a href="@routes.Application.task(cmt.subjectid,cmt.userid,1)">
 			<li class="outline">
-				@if(cmt.isNew){<span style="color:#F00">New!!</span>}@cmt.postUser<>@cmt.formatDate()<br>
-				@cmt.subjectid/@cmt.userid<>@cmt.body
+				<span class="left">@if(cmt.isNew){<span class="new">New!!</span>&nbsp;}@Subjects.getTitle(cmt.subjectid)&nbsp;[@cmt.postUser]</span>
+				<span class="right">@cmt.formatDate()</span><br>
+				@cmt.body
 			</li>
 		</a>
 	}
