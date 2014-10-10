@@ -55,7 +55,7 @@
 <ul>
 	@tasks.map{ tsk=>
 		<a href=@routes.Application.task(sid,tsk.userid,tsk.taskid)><li>
-			@tsk.formatDate()<>投稿者:@tsk.userid<>@tsk.taskid<br>
+			@tsk.formatDate()<>投稿者:@Users.getName(tsk.userid)<>@tsk.taskid<br>
 			<pre class="inline">@tsk.caption</pre>
 		</li></a>
 	}

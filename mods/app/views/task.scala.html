@@ -41,7 +41,7 @@
 		@for(cmt <- comments){
 			<li class="comment">
 				@cmt.formatDate()
-				@cmt.postUser
+				@Users.getName(cmt.postUser)
 				<pre>@cmt.body</pre>
 			</li>
 		}	

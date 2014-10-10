@@ -46,7 +46,7 @@ object Application extends Controller with myAuth with Utilities {
       formWithErrors => BadRequest(views.html.task(sid, uid, tid, "コメントの投稿に失敗しました。")),
       cmt => {
         val user = cmt._2 match {
-          case Some(x) => ("A120" + sid + req.session.get("user").get).hashCode().toString()
+          case Some(x) => Users.ANONY + ("A120" + sid + req.session.get("user").get).hashCode()
           case None => req.session.get("user").get
         }
         println(s"${user}(${req.session.get("user").get}) Posted Comment to ${sid}/${uid}")
@@ -83,7 +83,7 @@ object Application extends Controller with myAuth with Utilities {
     }
 
     val user = reqDate.get("anonymous") match {
-      case Some(x) => ("A120" + req.session.get("user").get + sid).hashCode().toString
+      case Some(x) => Users.ANONY + ("A120" + req.session.get("user").get + sid).hashCode()
       case None => req.session.get("user").get
     }
     val caption = reqDate.get("caption").getOrElse("")

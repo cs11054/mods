@@ -12,6 +12,7 @@ object Users extends Table[User]("USER") with DBSupport {
   def ins = id ~ password
 
   def * = id ~ password <> (User, User.unapply _)
+  val ANONY = "<?>"
 
   def isRegistered(id: String, password: String): Boolean = connectDB {
     Query(Users).list().exists(u => u.id == id)
@@ -21,6 +22,8 @@ object Users extends Table[User]("USER") with DBSupport {
     if (!isRegistered(id, password)) Users.ins.insert(id, password)
     else 0
   }
+
+  def getName(id: String): String = if (!id.startsWith(ANONY)) id else FamillyNames.anony2famname(id)
 
   def delete(id: String) = connectDB {
     if (id != "cs11054") Users.filter(_.id === id).delete

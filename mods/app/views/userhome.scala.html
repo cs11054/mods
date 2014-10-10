@@ -68,7 +68,7 @@
 	@for(cmt <- Comments.postNComments(id,5)){
 		<a href="@routes.Application.task(cmt.subjectid,cmt.userid,1)">
 			<li  class="outline">
-				<span class="left">@Subjects.getTitle(cmt.subjectid)&nbsp;[@cmt.userid]</span><span class="right">@cmt.formatDate()</span><br>
+				<span class="left">@Subjects.getTitle(cmt.subjectid)&nbsp;[@Users.getName(cmt.userid)]</span><span class="right">@cmt.formatDate()</span><br>
 				@cmt.body
 			</li>
 		</a>
@@ -82,7 +82,7 @@
 	@for(cmt <- Comments.recvNewsAndRecentUntilN(id,5)){
 		<a href="@routes.Application.task(cmt.subjectid,cmt.userid,1)">
 			<li class="outline">
-				<span class="left">@if(cmt.isNew){<span class="new">New!!</span>&nbsp;}@Subjects.getTitle(cmt.subjectid)&nbsp;[@cmt.postUser]</span>
+				<span class="left">@if(cmt.isNew){<span class="new">New!!</span>&nbsp;}@Subjects.getTitle(cmt.subjectid)&nbsp;[@Users.getName(cmt.postUser)]</span>
 				<span class="right">@cmt.formatDate()</span><br>
 				@cmt.body
 			</li>

@@ -14,7 +14,7 @@ object Subjects extends Table[Subject]("SUBJECT") with DBSupport {
   def * = subjectid ~ name <> (Subject, Subject.unapply _)
   def ins = name returning subjectid
 
-  val snameMap = scala.collection.parallel.mutable.ParTrieMap.empty[Int, String]
+  val snameMap = scala.collection.concurrent.TrieMap.empty[Int, String]
 
   def add(name: String) = connectDB {
     Subjects.ins.insert(name)
