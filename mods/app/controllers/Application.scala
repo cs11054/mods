@@ -24,15 +24,14 @@ object Application extends Controller with myAuth with Utilities {
   def index = Authenticated { implicit request =>
     Redirect(routes.Application.subject(Subjects.newestNum))
   }
-
   // User	///////////////////////////////////////////////////
   def user = Authenticated { implicit request =>
     Ok(views.html.userhome(request.session.get("user").get))
   }
 
   // Subject	///////////////////////////////////////////////
-  def subject(sid: Int) = Authenticated { implicit request =>
-    Ok(views.html.subject(sid))
+  def subject(sid: Int, key: String="date") = Authenticated { implicit request =>
+    Ok(views.html.subject(sid, sort = key))
   }
 
   // Task	///////////////////////////////////////////////////

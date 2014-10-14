@@ -9,6 +9,45 @@
 }
 /* トップサイドバーとメイン終わり **********************************/
 
+/*  ソートボタン部分******************************/
+#sort {
+	background-color: #bdc3c7;
+	margin-top: 10px;
+	padding: 5px;
+	color: #ecf0f1;
+	border-radius: 5px;
+}
+
+#sort .active {
+	font-weight: bold;
+}
+
+#sort p {
+	color: #34495e;
+	display: inline;
+}
+
+#sort div {
+	text-align: center;
+	display: inline-block;
+}
+
+#sort a {
+	padding:5px;
+	border-radius: 5px;
+	background-color: #7f8c8d;
+	color: #ecf0f1;
+	text-decoration: none;
+	display: block;
+	text-decoration: none;
+	width: 150px;
+}
+
+#sort a:hover {
+	background-color: #34495e;
+}
+/* ソートボタン部分終わり******************************/
+
 /* 課題一覧 **********************************/
 #subjects {
 	list-style-type: none;
@@ -26,7 +65,7 @@
 }
 
 #subjects li a {
-		border-radius: 5px;
+	border-radius: 5px;
 	text-align: center;
 	margin: 10px;
 	padding: 10px;

@@ -37,6 +37,24 @@ object Tasks extends Table[Task]("TASK") with DBSupport with Utilities {
     Query(Tasks).filter(_.subjectid === sid).sortBy(_.date.desc).list
   }
 
+  def sortedTasksOfSbj(sid: Int, key: String): List[Task] = {
+    val tasks = tasksOfNoDupSbj(sid)
+    key match {
+      case "date" => tasks
+      case "rdate" => tasks.reverse
+      case "iine" => tasks.map(t => t -> Iines.countIine(sid, t.userid)).sortBy(_._2)(Desc).map(_._1)
+      case "riine" => tasks.map(t => t -> Iines.countIine(sid, t.userid)).sortBy(_._2).map(_._1)
+      case "cmt" => tasks.map(t => t -> Comments.countComment(sid, t.userid)).sortBy(_._2)(Desc).map(_._1)
+      case "rcmt" => tasks.map(t => t -> Comments.countComment(sid, t.userid)).sortBy(_._2).map(_._1)
+      case _ => tasks.sortBy(_.date)(Desc)
+    }
+  }
+
+  def tasksOfNoDupSbj(sid: Int): List[Task] = connectDB {
+    Query(Tasks).filter(_.subjectid === sid).list
+      .groupBy(_.userid).map(_._2.maxBy(_.taskid)).toList.sortBy(_.date)(Desc)
+  }
+
   def getTasks(sid: Int, uid: String): List[Task] = connectDB {
     Query(Tasks).filter(t => t.subjectid === sid && t.userid === uid).sortBy(_.taskid).list
   }

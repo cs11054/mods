@@ -35,6 +35,8 @@ object Comments extends Table[Comment]("COMMENT") with DBSupport {
       .sortBy(_.date.desc).list
   }
 
+  def countComment(sid: Int, uid: String): Int = commentsOfTask(sid, uid).size
+
   def add(subjectid: Int, userid: String, postUser: String, body: String) = connectDB {
     val nextid = Query(Comments).filter(t => t.subjectid === subjectid && t.userid === userid).list.size + 1
     val date = System.currentTimeMillis()

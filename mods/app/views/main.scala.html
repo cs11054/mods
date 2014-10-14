@@ -17,22 +17,22 @@
     </head>
     <body>
     <div id="wrap">
-    <div id="header">
-    	<ul>
-			<li><a href="@routes.Application.index">TOP</a></li>
-			<li><a href="@routes.Application.user">ホーム</a></li>
-		</ul>
-		<span class="logout"><a href="@routes.Application.logout">Logout</a></span>
-    </div>
-    <br>
+ 	   <div id="header">
+    		<ul>
+				<li><a href="@routes.Application.index">課題ページ</a></li>
+				<li><a href="@routes.Application.user">ユーザーホーム</a></li>
+			</ul>
+			<span class="logout"><a href="@routes.Application.logout">Logout</a></span>
+		</div>
+		<br>
     
-    <div id="contents">
-        @content
-	</div>
+		<div id="contents">
+			@content
+		</div>
 	
-	<div id="footer">
-		<p>&copy; cs11054 2014</p>
-	</div>
+		<div id="footer">
+			<p>&copy; cs11054 2014</p>
+		</div>
 	</div>
     </body>
 </html>

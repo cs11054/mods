@@ -1,10 +1,9 @@
 @* top Template File *@
-@(sid:Int=Subjects.newestNum, msg:String = "")
+@(sid:Int=Subjects.newestNum, msg:String = "",sort:String="date")
 @import helper._
 @import helper.twitterBootstrap._
 
 @main(sname,styles=List("subject")) {
-
 	<div id="sidebar">
 		<div id="subjects">
 		@allSubjects
@@ -18,11 +17,25 @@
 			@postForm
 		</div>
 
+		<div id = "sort">
+			@printSort
+		</div>
+
 		<div id="posts">
 			@allTasks
 		</div>
 
 	</div>
+}
+
+@printSort ={
+	<p>ソート：</p>
+	<div><a href="@routes.Application.subject(sid,if(sort=="date"){"rdate"}else{"date"})" @if(sort.endsWith("date")){class="active"}>
+	時間@if(sort=="date"){[↑]}@if(sort=="rdate"){[↓]}</a></div>
+	<div><a href="@routes.Application.subject(sid,if(sort=="iine"){"riine"}else{"iine"})" @if(sort.endsWith("iine")){class="active"}>
+	いいね！！@if(sort=="iine"){[↑]}@if(sort=="riine"){[↓]}</a></div>
+	<div><a href="@routes.Application.subject(sid,if(sort=="cmt"){"rcmt"}else{"cmt"})" @if(sort.endsWith("cmt")){class="active"}>
+	コメント@if(sort=="cmt"){[↑]}@if(sort=="rcmt"){[↓]}</a></div>
 }
 
 @postForm ={
@@ -50,12 +63,12 @@
 </ul>
 }
 
-@tasks = @{Tasks.tasksOfSbj(sid)}
+@tasks = @{Tasks.sortedTasksOfSbj(sid,sort)}
 @allTasks = {
 <ul>
 	@tasks.map{ tsk=>
 		<a href=@routes.Application.task(sid,tsk.userid,tsk.taskid)><li>
-			@tsk.formatDate()<>投稿者:@Users.getName(tsk.userid)<>@tsk.taskid<br>
+			<span class="left">名前：@Users.getName(tsk.userid)</span><span class="right">@tsk.formatDate()</span><br>
 			<pre class="inline">@tsk.caption</pre>
 		</li></a>
 	}
