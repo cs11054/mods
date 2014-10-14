@@ -9,6 +9,9 @@ import models.User
 import models.Subject
 import models.Users
 import models.Subjects
+import models.Tasks
+import models.Iines
+import models.Comments
 
 object Manage extends Controller with myAuth {
 
@@ -17,8 +20,34 @@ object Manage extends Controller with myAuth {
     Ok(views.html.manage(msg))
   }
 
+  // DBのデータ保存
+  def save() {
+    println("DBのデータを保存しました")
+    Users.save
+    Tasks.save
+    Subjects.save
+    Iines.save
+    Comments.save
+  }
+  // DBのデータ読み込み
+  def load() {
+    println("DBのデータを読み込みました")
+    Users.load
+    Tasks.load
+    Subjects.load
+    Iines.load
+    Comments.load
+  }
+
   def managed(kind: String) = Administor { implicit request =>
     kind match {
+      case "saveDB" =>
+        save()
+        Ok(views.html.manage("DBのデータを保存しました。"))
+      case "loadDB" =>
+        load()
+        Ok(views.html.manage("DBのデータを読み込みました。"))
+
       case "addUser" =>
         Form(tuple("userId" -> nonEmptyText, "userPassword" -> nonEmptyText)).bindFromRequest.fold(
           formWithErrors => BadRequest(views.html.manage("ユーザーの登録に失敗しました")),

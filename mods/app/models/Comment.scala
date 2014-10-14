@@ -3,6 +3,7 @@ package models
 import scala.slick.driver.H2Driver.simple._
 import Database.threadLocalSession
 import java.util.Date
+import util.Utilities
 
 case class Comment(subjectid: Int, userid: String, commentid: Int, postUser: String, body: String, date: Long, isNew: Boolean) {
 
@@ -11,9 +12,16 @@ case class Comment(subjectid: Int, userid: String, commentid: Int, postUser: Str
     case _ => date.toString()
   }
 
+  def toXML = <subjectid>{ subjectid }</subjectid>
+              <userid>{ userid }</userid>
+              <commentid>{ commentid }</commentid>
+              <postUser>{ postUser }</postUser>
+              <body>{ body }</body>
+              <date>{ date }</date>
+              <isNew>{ isNew }</isNew>
 }
 
-object Comments extends Table[Comment]("COMMENT") with DBSupport {
+object Comments extends Table[Comment]("COMMENT") with DBSupport with Utilities {
 
   def subjectid = column[Int]("SUBJECTID", O.PrimaryKey, O.NotNull)
   def userid = column[String]("USERID", O.PrimaryKey, O.NotNull)
@@ -23,8 +31,28 @@ object Comments extends Table[Comment]("COMMENT") with DBSupport {
   def date = column[Long]("DATE", O.NotNull)
   def isNew = column[Boolean]("NEW", O.NotNull)
   def * = subjectid ~ userid ~ commentid ~ postUser ~ body ~ date ~ isNew <> (Comment, Comment.unapply _)
-
   def ins = subjectid ~ userid ~ commentid ~ postUser ~ body ~ date ~ isNew
+  val SAVE_PATH = "/db/comments.xml"
+
+  def save() { writeXML(SAVE_PATH, all()) }
+
+  def load() {
+    val list = readXML(SAVE_PATH) { node =>
+      val sid = (node \ "subjectid").text.toInt
+      val uid = (node \ "userid").text
+      val cid = (node \ "commentid").text.toInt
+      val postUser = (node \ "postUser").text
+      val body = (node \ "body").text
+      val date = (node \ "date").text.toLong
+      val isNew = (node \ "isNew").text.toBoolean
+      Comment(sid, uid, cid, postUser, body, date, isNew)
+    }
+    list.foreach(add(_))
+  }
+
+  def add(c: Comment) = connectDB {
+    Comments.ins.insert(c.subjectid, c.userid, c.commentid, c.postUser, c.body, c.date, c.isNew)
+  }
 
   def all(): List[Comment] = connectDB {
     Query(Comments).sortBy(_.date).list

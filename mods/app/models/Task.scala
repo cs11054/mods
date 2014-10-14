@@ -14,6 +14,12 @@ case class Task(subjectid: Int, userid: String, taskid: Int, caption: String, bo
     case _ => date.toString()
   }
 
+  def toXML = <subjectid>{ subjectid }</subjectid>
+              <userid>{ userid }</userid>
+              <taskid>{ taskid }</taskid>
+              <caption>{ caption }</caption>
+              <body>{ body }</body>
+              <date>{ date }</date>
 }
 
 object Tasks extends Table[Task]("TASK") with DBSupport with Utilities {
@@ -24,12 +30,27 @@ object Tasks extends Table[Task]("TASK") with DBSupport with Utilities {
   def caption = column[String]("CAPTION")
   def body = column[String]("BODY")
   def date = column[Long]("DATE", O.NotNull)
-
   def * = subjectid ~ userid ~ taskid ~ caption ~ body ~ date <> (Task, Task.unapply _)
-
   def ins = subjectid ~ userid ~ taskid ~ caption ~ body ~ date
 
+  val SAVE_PATH = "/db/tasks.xml"
+
+  def save() { writeXML(SAVE_PATH, all()) }
+
+  def load() {
+    val list = readXML(SAVE_PATH) { node =>
+      val sid = (node \ "subjectid").text.toInt
+      val uid = (node \ "userid").text
+      val tid = (node \ "taskid").text.toInt
+      val caption = (node \ "caption").text
+      val body = (node \ "body").text
+      val date = (node \ "date").text.toLong
+      Task(sid, uid, tid, caption, body, date)
+    }
+  }
+
   def all(): List[Task] = connectDB {
+	 
     Query(Tasks).sortBy(_.date).list
   }
 

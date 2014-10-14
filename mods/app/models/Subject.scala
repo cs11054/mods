@@ -3,18 +3,32 @@ package models
 import scala.slick.driver.H2Driver.simple._
 import Database.threadLocalSession
 import scala.concurrent.SyncVar
+import util.Utilities
 
-case class Subject(subjectid: Int, name: String)
+case class Subject(subjectid: Int, name: String) {
+  def toXML = <subjectid>{ subjectid }</subjectid>
+              <name>{ name }</name>
+}
 
-object Subjects extends Table[Subject]("SUBJECT") with DBSupport {
+object Subjects extends Table[Subject]("SUBJECT") with DBSupport with Utilities {
 
   def subjectid = column[Int]("SUBJECTID", O.AutoInc, O.PrimaryKey, O.NotNull)
   def name = column[String]("NAME", O.NotNull)
-
   def * = subjectid ~ name <> (Subject, Subject.unapply _)
   def ins = name returning subjectid
 
   val snameMap = scala.collection.concurrent.TrieMap.empty[Int, String]
+  val SAVE_PATH = "/db/subjects.xml"
+
+  def save() { writeXML(SAVE_PATH, all()) }
+
+  def load() {
+    val list = readXML(SAVE_PATH) { node =>
+      val subjectid = (node \ "subjectid").text.toInt
+      val name = (node \ "name").text
+      Subject(subjectid, name)
+    }
+  }
 
   def add(name: String) = connectDB {
     Subjects.ins.insert(name)
@@ -37,7 +51,6 @@ object Subjects extends Table[Subject]("SUBJECT") with DBSupport {
           x
         case None => sid.toString()
       }
-
   }
 
   private[this] def getTitleFromDB(sid: Int): Option[String] = connectDB {

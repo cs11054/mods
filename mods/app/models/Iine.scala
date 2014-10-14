@@ -3,6 +3,7 @@ package models
 import scala.slick.driver.H2Driver.simple._
 import Database.threadLocalSession
 import java.util.Date
+import util.Utilities
 
 case class Iine(subjectid: Int, userid: String, pushUser: String, date: Long, isNew: Boolean) {
 
@@ -11,9 +12,15 @@ case class Iine(subjectid: Int, userid: String, pushUser: String, date: Long, is
     case _ => date.toString()
   }
 
+  def toXML = <subjectid>{ subjectid }</subjectid>
+              <userid>{ userid }</userid>
+              <pushUser>{ pushUser }</pushUser>
+              <date>{ date }</date>
+              <isNew>{ isNew }</isNew>
+
 }
 
-object Iines extends Table[Iine]("IINE") with DBSupport {
+object Iines extends Table[Iine]("IINE") with DBSupport with Utilities {
 
   def subjectid = column[Int]("SUBJECTID", O.PrimaryKey, O.NotNull)
   def userid = column[String]("USERID", O.PrimaryKey, O.NotNull)
@@ -21,10 +28,25 @@ object Iines extends Table[Iine]("IINE") with DBSupport {
   def date = column[Long]("DATE", O.NotNull)
   def isNew = column[Boolean]("NEW", O.NotNull)
   def * = subjectid ~ userid ~ pushUser ~ date ~ isNew <> (Iine, Iine.unapply _)
-
   def ins = subjectid ~ userid ~ pushUser ~ date ~ isNew
+  val SAVE_PATH = "/db/iines.xml"
 
-  def all(): List[Iine] = ???
+  def save() { writeXML(SAVE_PATH, all()) }
+
+  def load() {
+    val list = readXML(SAVE_PATH) { node =>
+      val sid = (node \ "subjectid").text.toInt
+      val uid = (node \ "userid").text
+      val pushUser = (node \ "pushUser").text
+      val date = (node \ "date").text.toLong
+      val isNew = (node \ "isNew").text.toBoolean
+      Iine(sid, uid, pushUser, date, isNew)
+    }
+  }
+
+  def all(): List[Iine] = connectDB {
+    Query(Iines).sortBy(_.date).list
+  }
 
   def iineOfTask(sid: Int, uid: String): List[Iine] = connectDB {
     Query(Iines).filter(i => i.subjectid === sid && i.userid === uid).sortBy(_.date).list

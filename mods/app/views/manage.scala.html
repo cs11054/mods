@@ -1,4 +1,3 @@
-@* top Template File *@
 @(msg:String)
 @import helper._
 @import helper.twitterBootstrap._
@@ -7,6 +6,20 @@
 	
 	<div id="main">
 		<p>@msg</p>
+		
+		<div id="saveDB">
+                @form(routes.Manage.managed("saveDB")) {
+                    <input type="submit" value="DB保存">
+                }
+		</div>
+		
+		<div id="loadDB">
+                @form(routes.Manage.managed("loadDB")) {
+                    <input type="submit" value="DB読み込み">
+                }
+		</div>
+		<br>
+		
 		<div id="addUser">
                 @form(routes.Manage.managed("addUser")) {
                 	id<input type="text" name="userId" value=""><br>
