@@ -36,7 +36,7 @@ object Tasks extends Table[Task]("TASK") with DBSupport with XMLConv {
 
   val SAVE_PATH = "/db/tasks.xml"
 
-  def save() { writeXML(SAVE_PATH, all()) }
+  def save(op: String = "") { writeXML(SAVE_PATH + op, all()) }
 
   def load() {
     val list = readXML(SAVE_PATH) { node =>
@@ -48,11 +48,20 @@ object Tasks extends Table[Task]("TASK") with DBSupport with XMLConv {
       val date = (node \ "date").text.toLong
       Task(sid, uid, tid, caption, body, date)
     }
+    list.foreach(add(_))
+  }
+
+  def add(t: Task) = connectDB {
+    if (!Query(Tasks).list().exists(x => x.subjectid == t.subjectid && x.userid == t.userid && x.taskid == t.taskid))
+      Tasks.ins.insert(t.subjectid, t.userid, t.taskid, t.caption, t.body, t.date)
   }
 
   def all(): List[Task] = connectDB {
-
     Query(Tasks).sortBy(_.date).list
+  }
+
+  def allDel() = connectDB {
+    Query(Tasks).delete
   }
 
   def tasksOfSbj(sid: Int): List[Task] = connectDB {

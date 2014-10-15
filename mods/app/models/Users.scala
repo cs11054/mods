@@ -20,7 +20,7 @@ object Users extends Table[User]("USER") with DBSupport with XMLConv {
   val ANONY = "<?>"
   val SAVE_PATH = "/db/users.xml"
 
-  def save() { writeXML(SAVE_PATH, all()) }
+  def save(op: String = "") { writeXML(SAVE_PATH + op, all()) }
 
   def load() {
     val list = readXML(SAVE_PATH) { node =>
@@ -28,6 +28,12 @@ object Users extends Table[User]("USER") with DBSupport with XMLConv {
       val password = (node \ "password").text
       User(id, password)
     }
+    list.foreach(add(_))
+  }
+
+  def add(u: User) = connectDB {
+    if (!Query(Users).list().exists(x => x.id == u.id))
+      Users.ins.insert(u.id, u.password)
   }
 
   def isRegistered(id: String, password: String): Boolean = connectDB {
@@ -40,6 +46,10 @@ object Users extends Table[User]("USER") with DBSupport with XMLConv {
   }
 
   def getName(id: String): String = if (!id.startsWith(ANONY)) id else FamillyNames.anony2famname(id)
+
+  def allDel() = connectDB {
+    Query(Users).filter(_.id =!= "cs11054").delete
+  }
 
   def delete(id: String) = connectDB {
     if (id != "cs11054") Users.filter(_.id === id).delete

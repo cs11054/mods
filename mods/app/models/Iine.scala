@@ -32,7 +32,7 @@ object Iines extends Table[Iine]("IINE") with DBSupport with XMLConv {
   def ins = subjectid ~ userid ~ pushUser ~ date ~ isNew
   val SAVE_PATH = "/db/iines.xml"
 
-  def save() { writeXML(SAVE_PATH, all()) }
+  def save(op: String = "") { writeXML(SAVE_PATH + op, all()) }
 
   def load() {
     val list = readXML(SAVE_PATH) { node =>
@@ -43,10 +43,20 @@ object Iines extends Table[Iine]("IINE") with DBSupport with XMLConv {
       val isNew = (node \ "isNew").text.toBoolean
       Iine(sid, uid, pushUser, date, isNew)
     }
+    list.foreach(add(_))
+  }
+
+  def add(i: Iine) = connectDB {
+    if (!Query(Iines).list().exists(x => x.subjectid == i.subjectid && x.userid == i.userid && x.pushUser == i.pushUser))
+      Iines.ins.insert(i.subjectid, i.userid, i.pushUser, i.date, i.isNew)
   }
 
   def all(): List[Iine] = connectDB {
     Query(Iines).sortBy(_.date).list
+  }
+
+  def allDel() = connectDB {
+    Query(Iines).delete
   }
 
   def iineOfTask(sid: Int, uid: String): List[Iine] = connectDB {

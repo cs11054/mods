@@ -17,11 +17,12 @@ object Subjects extends Table[Subject]("SUBJECT") with DBSupport with XMLConv {
   def name = column[String]("NAME", O.NotNull)
   def * = subjectid ~ name <> (Subject, Subject.unapply _)
   def ins = name returning subjectid
+  def myins = subjectid ~ name
 
   private val snameMap = scala.collection.concurrent.TrieMap.empty[Int, String]
   val SAVE_PATH = "/db/subjects.xml"
 
-  def save() { writeXML(SAVE_PATH, all()) }
+  def save(op: String = "") { writeXML(SAVE_PATH + op, all()) }
 
   def load() {
     val list = readXML(SAVE_PATH) { node =>
@@ -29,6 +30,16 @@ object Subjects extends Table[Subject]("SUBJECT") with DBSupport with XMLConv {
       val name = (node \ "name").text
       Subject(subjectid, name)
     }
+    list.foreach(add(_))
+  }
+
+  def add(s: Subject) = connectDB {
+    if (!Query(Subjects).list().exists(x => x.subjectid == s.subjectid))
+      Subjects.myins.insert(s.subjectid, s.name)
+  }
+
+  def allDel() = connectDB {
+    Query(Subjects).delete
   }
 
   def add(name: String) = connectDB {

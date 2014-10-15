@@ -2,9 +2,32 @@ package models
 
 import util.XMLConv
 
-object FamillyNames extends XMLConv{
+object FamillyNames extends XMLConv {
 
   private val fnameMap = scala.collection.concurrent.TrieMap.empty[String, String]
+  private val SAVE_PATH = "/db/fmnm.xml"
+
+  case class KeyAndValue(key: String, value: String) {
+    def toXML = <key>{ key }</key>
+                <value>{ value }</value>
+  }
+
+  def load() {
+    val list = readXML(SAVE_PATH) { node =>
+      val key = (node \ "key").text
+      val value = (node \ "value").text
+      KeyAndValue(key, value)
+    }
+    for (kv <- list) fnameMap.put(kv.key, kv.value)
+  }
+
+  def save(op: String = "") {
+    writeXML(SAVE_PATH + op, fnameMap.map(kv => KeyAndValue(kv._1, kv._2)).toList)
+  }
+
+  def allDel() {
+    fnameMap.clear
+  }
 
   def anony2famname(n: String): String = fnameMap.get(n) match {
     case Some(x) => x

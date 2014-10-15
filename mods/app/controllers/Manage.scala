@@ -12,6 +12,7 @@ import models.Subjects
 import models.Tasks
 import models.Iines
 import models.Comments
+import models.FamillyNames
 
 object Manage extends Controller with myAuth {
 
@@ -21,13 +22,14 @@ object Manage extends Controller with myAuth {
   }
 
   // DBのデータ保存
-  private def save() {
+  private def save(op: String = "") {
     println("DBのデータを保存しました")
-    Users.save
-    Tasks.save
-    Subjects.save
-    Iines.save
-    Comments.save
+    Users.save(op)
+    Tasks.save(op)
+    Subjects.save(op)
+    Iines.save(op)
+    Comments.save(op)
+    FamillyNames.save(op)
   }
 
   // DBのデータ読み込み
@@ -38,6 +40,17 @@ object Manage extends Controller with myAuth {
     Subjects.load
     Iines.load
     Comments.load
+    FamillyNames.load
+  }
+  // DBのデータを消す
+  private def del() {
+    println("DBのデータを削除しました")
+    Users.allDel
+    Tasks.allDel
+    Subjects.allDel
+    Iines.allDel
+    Comments.allDel
+    FamillyNames.allDel
   }
 
   def managed(kind: String) = Administor { implicit request =>
@@ -48,6 +61,10 @@ object Manage extends Controller with myAuth {
       case "loadDB" =>
         load()
         Ok(views.html.manage("DBのデータを読み込みました。"))
+      case "delDB" =>
+        save(".bk")
+        del()
+        Ok(views.html.manage("DBのデータを削除しました。"))
 
       case "addUser" =>
         Form(tuple("userId" -> nonEmptyText, "userPassword" -> nonEmptyText)).bindFromRequest.fold(

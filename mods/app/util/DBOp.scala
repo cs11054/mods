@@ -13,7 +13,6 @@ object Demo {
     val comments = Comments.all()
     val subjects = Subjects.all()
     val tasks = Tasks.all()
-
   }
 
 }

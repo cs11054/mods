@@ -35,7 +35,7 @@ object Comments extends Table[Comment]("COMMENT") with DBSupport with XMLConv {
   def ins = subjectid ~ userid ~ commentid ~ postUser ~ body ~ date ~ isNew
   val SAVE_PATH = "/db/comments.xml"
 
-  def save() { writeXML(SAVE_PATH, all()) }
+  def save(op: String = "") { writeXML(SAVE_PATH + op, all()) }
 
   def load() {
     val list = readXML(SAVE_PATH) { node =>
@@ -52,11 +52,16 @@ object Comments extends Table[Comment]("COMMENT") with DBSupport with XMLConv {
   }
 
   def add(c: Comment) = connectDB {
-    Comments.ins.insert(c.subjectid, c.userid, c.commentid, c.postUser, c.body, c.date, c.isNew)
+    if (!Query(Comments).list().exists(x => x.subjectid == c.subjectid && x.userid == c.userid && x.commentid == c.commentid))
+      Comments.ins.insert(c.subjectid, c.userid, c.commentid, c.postUser, c.body, c.date, c.isNew)
   }
 
   def all(): List[Comment] = connectDB {
     Query(Comments).sortBy(_.date).list
+  }
+
+  def allDel() = connectDB {
+    Query(Comments).delete
   }
 
   def commentsOfTask(sid: Int, uid: String): List[Comment] = connectDB {

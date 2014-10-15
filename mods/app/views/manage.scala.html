@@ -12,10 +12,16 @@
                     <input type="submit" value="DB保存">
                 }
 		</div>
-		
+		&nbsp;
 		<div id="loadDB">
                 @form(routes.Manage.managed("loadDB")) {
                     <input type="submit" value="DB読み込み">
+                }
+		</div>
+		&nbsp;
+		<div id="delDB">
+                @form(routes.Manage.managed("delDB")) {
+                    <input type="submit" value="DB削除">
                 }
 		</div>
 		<br>
