@@ -3,13 +3,14 @@ package models
 import scala.slick.driver.H2Driver.simple._
 import Database.threadLocalSession
 import util.Utilities
+import util.XMLConv
 
 case class User(id: String, password: String) {
   def toXML = <id>{ id }</id>
               <password>{ password }</password>
 }
 
-object Users extends Table[User]("USER") with DBSupport with Utilities {
+object Users extends Table[User]("USER") with DBSupport with XMLConv {
 
   def id = column[String]("ID", O.PrimaryKey)
   def password = column[String]("PASSWORD", O.NotNull)

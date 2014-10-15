@@ -6,6 +6,7 @@ import java.util.Date
 import util.Utilities
 import java.io.File
 import scala.io.Source
+import util.XMLConv
 
 case class Task(subjectid: Int, userid: String, taskid: Int, caption: String, body: String, date: Long) {
 
@@ -22,7 +23,7 @@ case class Task(subjectid: Int, userid: String, taskid: Int, caption: String, bo
               <date>{ date }</date>
 }
 
-object Tasks extends Table[Task]("TASK") with DBSupport with Utilities {
+object Tasks extends Table[Task]("TASK") with DBSupport with XMLConv {
 
   def subjectid = column[Int]("SUBJECTID", O.PrimaryKey, O.NotNull)
   def userid = column[String]("USERID", O.PrimaryKey, O.NotNull)
@@ -50,7 +51,7 @@ object Tasks extends Table[Task]("TASK") with DBSupport with Utilities {
   }
 
   def all(): List[Task] = connectDB {
-	 
+
     Query(Tasks).sortBy(_.date).list
   }
 

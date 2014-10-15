@@ -21,7 +21,7 @@ object Manage extends Controller with myAuth {
   }
 
   // DBのデータ保存
-  def save() {
+  private def save() {
     println("DBのデータを保存しました")
     Users.save
     Tasks.save
@@ -29,8 +29,9 @@ object Manage extends Controller with myAuth {
     Iines.save
     Comments.save
   }
+
   // DBのデータ読み込み
-  def load() {
+  private def load() {
     println("DBのデータを読み込みました")
     Users.load
     Tasks.load

@@ -4,6 +4,7 @@ import scala.slick.driver.H2Driver.simple._
 import Database.threadLocalSession
 import java.util.Date
 import util.Utilities
+import util.XMLConv
 
 case class Comment(subjectid: Int, userid: String, commentid: Int, postUser: String, body: String, date: Long, isNew: Boolean) {
 
@@ -21,7 +22,7 @@ case class Comment(subjectid: Int, userid: String, commentid: Int, postUser: Str
               <isNew>{ isNew }</isNew>
 }
 
-object Comments extends Table[Comment]("COMMENT") with DBSupport with Utilities {
+object Comments extends Table[Comment]("COMMENT") with DBSupport with XMLConv {
 
   def subjectid = column[Int]("SUBJECTID", O.PrimaryKey, O.NotNull)
   def userid = column[String]("USERID", O.PrimaryKey, O.NotNull)

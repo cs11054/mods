@@ -9,7 +9,8 @@ import models.Users
 
 trait myAuth extends Controller {
 
-  case class AuthenticatedRequest(val user: String, request: Request[AnyContent]) extends WrappedRequest(request)
+  case class AuthenticatedRequest(val user: String, request: Request[AnyContent])
+    extends WrappedRequest(request)
 
   def Authenticated(f: AuthenticatedRequest => Result) = {
     Action { request =>

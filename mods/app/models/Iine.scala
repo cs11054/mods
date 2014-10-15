@@ -4,6 +4,7 @@ import scala.slick.driver.H2Driver.simple._
 import Database.threadLocalSession
 import java.util.Date
 import util.Utilities
+import util.XMLConv
 
 case class Iine(subjectid: Int, userid: String, pushUser: String, date: Long, isNew: Boolean) {
 
@@ -20,7 +21,7 @@ case class Iine(subjectid: Int, userid: String, pushUser: String, date: Long, is
 
 }
 
-object Iines extends Table[Iine]("IINE") with DBSupport with Utilities {
+object Iines extends Table[Iine]("IINE") with DBSupport with XMLConv {
 
   def subjectid = column[Int]("SUBJECTID", O.PrimaryKey, O.NotNull)
   def userid = column[String]("USERID", O.PrimaryKey, O.NotNull)

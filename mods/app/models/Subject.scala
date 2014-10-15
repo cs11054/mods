@@ -4,20 +4,21 @@ import scala.slick.driver.H2Driver.simple._
 import Database.threadLocalSession
 import scala.concurrent.SyncVar
 import util.Utilities
+import util.XMLConv
 
 case class Subject(subjectid: Int, name: String) {
   def toXML = <subjectid>{ subjectid }</subjectid>
               <name>{ name }</name>
 }
 
-object Subjects extends Table[Subject]("SUBJECT") with DBSupport with Utilities {
+object Subjects extends Table[Subject]("SUBJECT") with DBSupport with XMLConv {
 
   def subjectid = column[Int]("SUBJECTID", O.AutoInc, O.PrimaryKey, O.NotNull)
   def name = column[String]("NAME", O.NotNull)
   def * = subjectid ~ name <> (Subject, Subject.unapply _)
   def ins = name returning subjectid
 
-  val snameMap = scala.collection.concurrent.TrieMap.empty[Int, String]
+  private val snameMap = scala.collection.concurrent.TrieMap.empty[Int, String]
   val SAVE_PATH = "/db/subjects.xml"
 
   def save() { writeXML(SAVE_PATH, all()) }
@@ -53,7 +54,7 @@ object Subjects extends Table[Subject]("SUBJECT") with DBSupport with Utilities 
       }
   }
 
-  private[this] def getTitleFromDB(sid: Int): Option[String] = connectDB {
+  private def getTitleFromDB(sid: Int): Option[String] = connectDB {
     Query(Subjects).filter(_.subjectid === sid).map(_.name).firstOption
   }
 
