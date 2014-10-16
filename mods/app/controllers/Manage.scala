@@ -22,25 +22,25 @@ object Manage extends Controller with myAuth {
   }
 
   // DBのデータ保存
-  private def save(op: String = "") {
+  private def save(path: String) {
     println("DBのデータを保存しました")
-    Users.save(op)
-    Tasks.save(op)
-    Subjects.save(op)
-    Iines.save(op)
-    Comments.save(op)
-    FamillyNames.save(op)
+    Users.save(path)
+    Tasks.save(path)
+    Subjects.save(path)
+    Iines.save(path)
+    Comments.save(path)
+    FamillyNames.save(path)
   }
 
   // DBのデータ読み込み
-  private def load() {
+  private def load(path: String) {
     println("DBのデータを読み込みました")
-    Users.load
-    Tasks.load
-    Subjects.load
-    Iines.load
-    Comments.load
-    FamillyNames.load
+    Users.load(path)
+    Tasks.load(path)
+    Subjects.load(path)
+    Iines.load(path)
+    Comments.load(path)
+    FamillyNames.load(path)
   }
   // DBのデータを消す
   private def del() {
@@ -53,18 +53,25 @@ object Manage extends Controller with myAuth {
     FamillyNames.allDel
   }
 
+  val SAVE_PATH = "/db/"
   def managed(kind: String) = Administor { implicit request =>
     kind match {
       case "saveDB" =>
-        save()
+        save(SAVE_PATH)
         Ok(views.html.manage("DBのデータを保存しました。"))
+
       case "loadDB" =>
-        load()
+        load(SAVE_PATH)
         Ok(views.html.manage("DBのデータを読み込みました。"))
+
       case "delDB" =>
-        save(".bk")
+        save(SAVE_PATH + "/bk/")
         del()
         Ok(views.html.manage("DBのデータを削除しました。"))
+
+      case "loadDemo" =>
+        load(SAVE_PATH + "/demo/")
+        Ok(views.html.manage("デモデータを読み込みました。"))
 
       case "addUser" =>
         Form(tuple("userId" -> nonEmptyText, "userPassword" -> nonEmptyText)).bindFromRequest.fold(

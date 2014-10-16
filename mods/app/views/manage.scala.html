@@ -19,6 +19,12 @@
                 }
 		</div>
 		&nbsp;
+		<div id="loadDemo">
+                @form(routes.Manage.managed("loadDemo")) {
+                    <input type="submit" value="Demoの読み込み">
+                }
+		</div>
+		&nbsp;
 		<div id="delDB">
                 @form(routes.Manage.managed("delDB")) {
                     <input type="submit" value="DB削除">

@@ -33,12 +33,12 @@ object Comments extends Table[Comment]("COMMENT") with DBSupport with XMLConv {
   def isNew = column[Boolean]("NEW", O.NotNull)
   def * = subjectid ~ userid ~ commentid ~ postUser ~ body ~ date ~ isNew <> (Comment, Comment.unapply _)
   def ins = subjectid ~ userid ~ commentid ~ postUser ~ body ~ date ~ isNew
-  val SAVE_PATH = "/db/comments.xml"
+  val SAVE_NAME = "comments.xml"
 
-  def save(op: String = "") { writeXML(SAVE_PATH + op, all()) }
+  def save(path: String) { writeXML(path + SAVE_NAME, all()) }
 
-  def load() {
-    val list = readXML(SAVE_PATH) { node =>
+  def load(path: String) {
+    val list = readXML(path + SAVE_NAME) { node =>
       val sid = (node \ "subjectid").text.toInt
       val uid = (node \ "userid").text
       val cid = (node \ "commentid").text.toInt

@@ -30,12 +30,12 @@ object Iines extends Table[Iine]("IINE") with DBSupport with XMLConv {
   def isNew = column[Boolean]("NEW", O.NotNull)
   def * = subjectid ~ userid ~ pushUser ~ date ~ isNew <> (Iine, Iine.unapply _)
   def ins = subjectid ~ userid ~ pushUser ~ date ~ isNew
-  val SAVE_PATH = "/db/iines.xml"
+  val SAVE_PATH = "iines.xml"
 
-  def save(op: String = "") { writeXML(SAVE_PATH + op, all()) }
+  def save(path: String) { writeXML(path + SAVE_PATH, all()) }
 
-  def load() {
-    val list = readXML(SAVE_PATH) { node =>
+  def load(path: String) {
+    val list = readXML(path + SAVE_PATH) { node =>
       val sid = (node \ "subjectid").text.toInt
       val uid = (node \ "userid").text
       val pushUser = (node \ "pushUser").text

@@ -20,12 +20,12 @@ object Subjects extends Table[Subject]("SUBJECT") with DBSupport with XMLConv {
   def myins = subjectid ~ name
 
   private val snameMap = scala.collection.concurrent.TrieMap.empty[Int, String]
-  val SAVE_PATH = "/db/subjects.xml"
+  val SAVE_NAME = "subjects.xml"
 
-  def save(op: String = "") { writeXML(SAVE_PATH + op, all()) }
+  def save(path: String) { writeXML(path + SAVE_NAME, all()) }
 
-  def load() {
-    val list = readXML(SAVE_PATH) { node =>
+  def load(path: String) {
+    val list = readXML(path + SAVE_NAME) { node =>
       val subjectid = (node \ "subjectid").text.toInt
       val name = (node \ "name").text
       Subject(subjectid, name)

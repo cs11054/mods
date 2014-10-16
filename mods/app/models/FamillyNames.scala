@@ -5,15 +5,15 @@ import util.XMLConv
 object FamillyNames extends XMLConv {
 
   private val fnameMap = scala.collection.concurrent.TrieMap.empty[String, String]
-  private val SAVE_PATH = "/db/fmnm.xml"
+  private val SAVE_NAME = "fmnm.xml"
 
   case class KeyAndValue(key: String, value: String) {
     def toXML = <key>{ key }</key>
                 <value>{ value }</value>
   }
 
-  def load() {
-    val list = readXML(SAVE_PATH) { node =>
+  def load(path: String) {
+    val list = readXML(path + SAVE_NAME) { node =>
       val key = (node \ "key").text
       val value = (node \ "value").text
       KeyAndValue(key, value)
@@ -21,8 +21,8 @@ object FamillyNames extends XMLConv {
     for (kv <- list) fnameMap.put(kv.key, kv.value)
   }
 
-  def save(op: String = "") {
-    writeXML(SAVE_PATH + op, fnameMap.map(kv => KeyAndValue(kv._1, kv._2)).toList)
+  def save(path: String = "") {
+    writeXML(path + SAVE_NAME, fnameMap.map(kv => KeyAndValue(kv._1, kv._2)).toList)
   }
 
   def allDel() {

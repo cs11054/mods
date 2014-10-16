@@ -34,12 +34,12 @@ object Tasks extends Table[Task]("TASK") with DBSupport with XMLConv {
   def * = subjectid ~ userid ~ taskid ~ caption ~ body ~ date <> (Task, Task.unapply _)
   def ins = subjectid ~ userid ~ taskid ~ caption ~ body ~ date
 
-  val SAVE_PATH = "/db/tasks.xml"
+  val SAVE_NAME = "tasks.xml"
 
-  def save(op: String = "") { writeXML(SAVE_PATH + op, all()) }
+  def save(path: String) { writeXML(path + SAVE_NAME, all()) }
 
-  def load() {
-    val list = readXML(SAVE_PATH) { node =>
+  def load(path: String) {
+    val list = readXML(path + SAVE_NAME) { node =>
       val sid = (node \ "subjectid").text.toInt
       val uid = (node \ "userid").text
       val tid = (node \ "taskid").text.toInt

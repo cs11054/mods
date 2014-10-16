@@ -18,12 +18,12 @@ object Users extends Table[User]("USER") with DBSupport with XMLConv {
 
   def * = id ~ password <> (User, User.unapply _)
   val ANONY = "<?>"
-  val SAVE_PATH = "/db/users.xml"
+  val SAVE_NAME = "users.xml"
 
-  def save(op: String = "") { writeXML(SAVE_PATH + op, all()) }
+  def save(path: String) { writeXML(path + SAVE_NAME, all()) }
 
-  def load() {
-    val list = readXML(SAVE_PATH) { node =>
+  def load(path: String) {
+    val list = readXML(path + SAVE_NAME) { node =>
       val id = (node \ "id").text
       val password = (node \ "password").text
       User(id, password)

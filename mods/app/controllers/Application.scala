@@ -30,7 +30,7 @@ object Application extends Controller with myAuth with Utilities {
   }
 
   // Subject	///////////////////////////////////////////////
-  def subject(sid: Int, key: String="date") = Authenticated { implicit request =>
+  def subject(sid: Int, key: String = "date") = Authenticated { implicit request =>
     Ok(views.html.subject(sid, sort = key))
   }
 
@@ -90,11 +90,16 @@ object Application extends Controller with myAuth with Utilities {
 
     req.body.file("source").map { src =>
       if (src.filename.endsWith(".java")) {
-        val body = using(Source.fromFile(src.ref.file.getAbsoluteFile())) { _.getLines.mkString("\n") } getOrElse ("")
+        val body = using(Source.fromFile(src.ref.file.getAbsoluteFile(),"UTF-8")) { _.getLines.mkString("\n") } getOrElse ("")
         src.ref.file.delete()
-        Tasks.add(sid, user, caption, body)
-        println(s"File [${src.filename}] Uploaded by ${req.session.get("user").get}")
-        Ok(views.html.subject(sid, "投稿しました。"))
+        if (body != "") {
+          Tasks.add(sid, user, caption, body)
+          println(s"File [${src.filename}] Uploaded by ${req.session.get("user").get}")
+          Ok(views.html.subject(sid, "投稿しました。"))
+        } else {
+          println(s"File [${src.filename}] Uploaded by ${req.session.get("user").get} but missed")
+          BadRequest(views.html.subject(sid, "投稿に失敗しました。"))
+        }
       } else {
         BadRequest(views.html.subject(sid, "投稿に失敗しました。"))
       }
