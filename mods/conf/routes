@@ -9,7 +9,7 @@ GET    /                         controllers.Application.index
 GET    /user                     controllers.Application.user
 
 # Subject
-GET    /subject/:sid             controllers.Application.subject(sid:Int,sort:String ?="date")
+GET    /subject/:sid             controllers.Application.subject(sid:Int,sort:String ?="date",msg:String?="")
 
 # Task
 GET    /subject/:sid/:uid/:tid   controllers.Application.task(sid:Int,uid: String,tid:Int)

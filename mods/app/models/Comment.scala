@@ -66,7 +66,7 @@ object Comments extends Table[Comment]("COMMENT") with DBSupport with XMLConv {
 
   def commentsOfTask(sid: Int, uid: String): List[Comment] = connectDB {
     Query(Comments).filter(c => c.subjectid === sid && c.userid === uid)
-      .sortBy(_.date.desc).list
+      .sortBy(_.date).list
   }
 
   def countComment(sid: Int, uid: String): Int = commentsOfTask(sid, uid).size

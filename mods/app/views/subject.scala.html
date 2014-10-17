@@ -1,4 +1,4 @@
-@(sid:Int=Subjects.newestNum, msg:String = "",sort:String="date")
+@(sid:Int=Subjects.newestNum,subjects:List[Subject],tasks:List[Task], msg:String = "",sort:String="date")
 @import helper._
 @import helper.twitterBootstrap._
 
@@ -48,7 +48,6 @@
 }
 
 
-@subjects = @{Subjects.all()}
 @sname = @{subjects.find(_.subjectid==sid).map(_.name).getOrElse("未登録課題")}
 @allSubjects = {
 <ul>
@@ -62,7 +61,6 @@
 </ul>
 }
 
-@tasks = @{Tasks.sortedTasksOfSbj(sid,sort)}
 @allTasks = {
 <ul>
 	@tasks.map{ tsk=>

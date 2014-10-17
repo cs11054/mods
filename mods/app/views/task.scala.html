@@ -1,4 +1,4 @@
-@(sid:Int,uid:String,tid:Int,msg:String="")
+@(sid:Int,uid:String,tid:Int,tasksWithIdx:List[((String,String),Int)],comments:List[Comment],msg:String="")
 
 @import helper._
 @import helper.twitterBootstrap._
@@ -29,12 +29,8 @@
 	}
 
 </div>
-
-@prettyPrintDecl()
-
 }
 
-@comments = @{Comments.commentsOfTask(sid,uid)}
 @printComment()={
 	<p>コメント一覧</p>
 	<ul>
@@ -44,7 +40,7 @@
 				@Users.getName(cmt.postUser)
 				<pre>@cmt.body</pre>
 			</li>
-		}	
+		}
 	</ul>
 }
 
@@ -58,17 +54,16 @@
 	</script>
 }
 
-@tasks = @{Tasks.getCaptionAndCodeLines(sid,uid).zipWithIndex}
 @printCode2Tab(selectNum:Int) = {
 	<ul id="tab">
-		@for((task,i) <- tasks){
+		@for((task,i) <- tasksWithIdx){
 			<li @if(i==(selectNum-1)){class="selected active"}>
 				<a href="#tab@i">コード@{i+1}</a>
 			</li>
 		} 
 	</ul>
 	<div id="detail">
-		@for((task,i) <- tasks){
+		@for((task,i) <- tasksWithIdx){
 			<div id="tab@i" class="tabbox" @if(i==(selectNum-1)){style="display:block"}>
 			<pre class="caption">
 @task._1</pre>

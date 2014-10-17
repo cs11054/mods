@@ -90,7 +90,7 @@ object Tasks extends Table[Task]("TASK") with DBSupport with XMLConv {
     Query(Tasks).filter(t => t.subjectid === sid && t.userid === uid).sortBy(_.taskid).list
   }
 
-  def getCaptionAndCodeLines(sid: Int, uid: String): List[(String, String)] = {
+  def getCaptionAndCode(sid: Int, uid: String): List[(String, String)] = {
     getTasks(sid, uid).map(t => (t.caption, t.body))
   }
 
