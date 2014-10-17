@@ -36,6 +36,7 @@ ul#tab li.active a:hover {
 	clear: both;
 	overflow: hidden;
 	padding:10px;
+	display:inline-block;
 }
 .tabbox {
 	display: none;
