@@ -53,7 +53,7 @@ object Manage extends Controller with myAuth {
     FamillyNames.allDel
   }
 
-  val SAVE_PATH = "/db/"
+  val SAVE_PATH = "./db/"
   def managed(kind: String) = Administor { implicit request =>
     kind match {
       case "saveDB" =>
