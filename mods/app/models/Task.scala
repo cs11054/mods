@@ -110,5 +110,11 @@ object Tasks extends Table[Task]("TASK") with DBSupport with XMLConv {
       && t.userid === userid && t.taskid === taskid).delete
   }
 
+  // ユーザーの投稿の中で一番新しい番号を返す、ないならば-1
+  def newestNumOfUser(sid: Int, uid: String): Int = connectDB {
+    Query(Tasks).filter(t => t.subjectid === sid && t.userid === uid).sortBy(_.date.desc)
+      .list.headOption.map(_.taskid).getOrElse(-1)
+  }
+
 }
     

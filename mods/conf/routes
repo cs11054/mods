@@ -12,7 +12,7 @@ GET    /user                     controllers.Application.user
 GET    /subject/:sid             controllers.Application.subject(sid:Int,sort:String ?="date",msg:String?="")
 
 # Task
-GET    /subject/:sid/:uid/:tid   controllers.Application.task(sid:Int,uid: String,tid:Int)
+GET    /subject/:sid/:uid        controllers.Application.task(sid:Int,uid: String,tid:Option[Int])
 POST   /subject/:sid/:uid/:tid   controllers.Application.cmtPost(sid:Int,uid: String,tid:Int)
 GET    /iine                     controllers.Application.iine(sid:Int,uid: String)
 POST   /iine                     controllers.Application.pushIine(sid:Int,uid: String)
@@ -21,7 +21,7 @@ POST   /iine                     controllers.Application.pushIine(sid:Int,uid: S
 GET    /manage                   controllers.Manage.manage()
 POST   /manage                   controllers.Manage.managed(kind:String)
 
-# Upload 後でいらんかも
+# Upload
 GET    /upload                   controllers.Application.upload
 POST   /uploaded                 controllers.Application.uploaded
 

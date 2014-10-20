@@ -37,8 +37,9 @@ object Application extends Controller with myAuth with Utilities {
   }
 
   // Task	///////////////////////////////////////////////////
-  def task(sid: Int, uid: String, tid: Int) = Authenticated { implicit request =>
-    Ok(views.html.task(sid, uid, tid, Tasks.getCaptionAndCode(sid, uid).zipWithIndex, Comments.commentsOfTask(sid, uid)))
+  def task(sid: Int, uid: String, tid: Option[Int]) = Authenticated { implicit request =>
+    Ok(views.html.task(sid, uid, tid.getOrElse(Tasks.newestNumOfUser(sid, uid)),
+      Tasks.getCaptionAndCode(sid, uid).zipWithIndex, Comments.commentsOfTask(sid, uid)))
   }
 
   // Comment	///////////////////////////////////////////////

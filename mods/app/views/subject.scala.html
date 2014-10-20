@@ -5,7 +5,7 @@
 @main(sname,styles=List("subject")) {
 	<div id="sidebar">
 		<div id="subjects">
-		@allSubjects
+			@allSubjects
 		</div>
 	</div>
 
@@ -64,7 +64,7 @@
 @allTasks = {
 <ul>
 	@tasks.map{ tsk=>
-		<a href=@routes.Application.task(sid,tsk.userid,tsk.taskid)><li>
+		<a href=@routes.Application.task(sid,tsk.userid,Some(tsk.taskid))><li>
 			<span class="left">名前：@Users.getName(tsk.userid)</span><span class="right">@tsk.formatDate()</span><br>
 			<pre class="inline">@tsk.caption</pre>
 		</li></a>
