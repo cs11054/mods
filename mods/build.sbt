@@ -7,6 +7,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.slick" %% "slick" % "1.0.1",
   "com.typesafe.play" %% "play-slick" % "0.5.0.8",
   "com.h2database" % "h2" % "1.3.166",
+   "postgresql" % "postgresql" % "8.4-702.jdbc4",
   cache
 )     
 
