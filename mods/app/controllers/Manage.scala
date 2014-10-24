@@ -13,12 +13,24 @@ import models.Tasks
 import models.Iines
 import models.Comments
 import models.FamillyNames
+import util.Utilities
 
 object Manage extends Controller with myAuth {
 
   // Manage	///////////////////////////////////////////////////
   def manage(msg: String = "") = Administor { implicit request =>
     Ok(views.html.manage(msg))
+  }
+
+  def backup() {
+    val path = SAVE_PATH + s"/bk/${System.currentTimeMillis()}"
+    println("DBのデータをバックアップしました")
+    Users.save(path)
+    Tasks.save(path)
+    Subjects.save(path)
+    Iines.save(path)
+    Comments.save(path)
+    FamillyNames.save(path)
   }
 
   // DBのデータ保存

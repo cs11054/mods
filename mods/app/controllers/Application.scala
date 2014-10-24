@@ -20,6 +20,8 @@ import models.Iines
 
 object Application extends Controller with myAuth with Utilities {
 
+  val SEP = "<@>"
+
   // TOP	///////////////////////////////////////////////////
   def index = Authenticated { implicit request =>
     Redirect(routes.Application.subject(Subjects.newestNum))
@@ -27,17 +29,20 @@ object Application extends Controller with myAuth with Utilities {
   // UserHome	///////////////////////////////////////////////
   def user = Authenticated { implicit request =>
     val id = request.session.get("user").get
+    MyLogger.log(s"${id}${SEP}UserHome${SEP}${nowTime()}")
     Ok(views.html.userhome(id, Tasks.postNTasks(id, 5), Iines.recvNewsAndRecentUntilN(id, 5),
       Comments.postNComments(id, 5), Comments.recvNewsAndRecentUntilN(id, 5)))
   }
 
   // Subject	///////////////////////////////////////////////
   def subject(sid: Int, key: String = "date", msg: String = "") = Authenticated { implicit request =>
+    MyLogger.log(s"${request.session.get("user").get}${SEP}Subject ${sid}${SEP}${nowTime()}")
     Ok(views.html.subject(sid, Subjects.all(), Tasks.sortedTasksOfSbj(sid, key), sort = key))
   }
 
   // Task	///////////////////////////////////////////////////
   def task(sid: Int, uid: String, tid: Option[Int]) = Authenticated { implicit request =>
+    MyLogger.log(s"${request.session.get("user").get}${SEP}Task ${sid}/${uid}${SEP}${nowTime()}")
     Ok(views.html.task(sid, uid, tid.getOrElse(Tasks.newestNumOfUser(sid, uid)),
       Tasks.getCaptionAndCode(sid, uid).zipWithIndex, Comments.commentsOfTask(sid, uid)))
   }
@@ -53,7 +58,7 @@ object Application extends Controller with myAuth with Utilities {
           case Some(x) => Users.ANONY + ("A120" + sid + req.session.get("user").get).hashCode()
           case None => req.session.get("user").get
         }
-        println(s"${user}(${req.session.get("user").get}) Posted Comment to ${sid}/${uid}")
+        MyLogger.log(s"${req.session.get("user").get}${SEP}Comment ${sid}/${uid}${SEP}${nowTime()}")
         Comments.add(sid, uid, user, cmt._1)
         Ok(views.html.task(sid, uid, tid, Tasks.getCaptionAndCode(sid, uid).zipWithIndex, Comments.commentsOfTask(sid, uid), msg = "コメントを投稿しました。"))
       })
@@ -66,7 +71,7 @@ object Application extends Controller with myAuth with Utilities {
 
   def pushIine(sid: Int, uid: String) = Authenticated { implicit req =>
     val user = req.session.get("user").get
-    println(s"${user} push いいね at ${sid}/${uid}")
+    MyLogger.log(s"${user}${SEP}Iine ${sid}/${uid}${SEP}${nowTime()}")
     Iines.add(sid, uid, user)
     Ok(views.html.iine(sid, uid, Iines.countIine(sid, uid)))
   }
@@ -99,10 +104,10 @@ object Application extends Controller with myAuth with Utilities {
         src.ref.file.delete()
         if (body != "") {
           Tasks.add(sid, user, caption, body)
-          println(s"File [${src.filename}] Uploaded by ${req.session.get("user").get}")
+          MyLogger.log(s"${req.session.get("user").get}${SEP}Upload ${sid} ${caption}${SEP}${nowTime()}")
           Redirect(routes.Application.subject(sid, msg = "投稿しました。"))
         } else {
-          println(s"File [${src.filename}] Uploaded by ${req.session.get("user").get} but missed")
+          MyLogger.log(s"${req.session.get("user").get}${SEP}missUpload ${sid} ${caption}${SEP}${nowTime()}")
           Redirect(routes.Application.subject(sid, msg = "投稿に失敗しました。"))
         }
       } else {
@@ -122,14 +127,14 @@ object Application extends Controller with myAuth with Utilities {
     loginForm.bindFromRequest.fold(
       formWithErrors => BadRequest(views.html.login(formWithErrors)),
       user => {
-        Console.println("login:" + user._1)
+        MyLogger.log(s"${user._1}${SEP}Login${SEP}${nowTime()}")
         if (Users.isRegistered(user._1, user._2)) Redirect(routes.Application.index).withSession("user" -> user._1)
         else BadRequest(views.html.login(loginForm))
       })
   }
 
   def logout = Action { implicit request =>
-    Console.println("logout:" + session.get("user").getOrElse(""))
+    MyLogger.log(s"${session.get("user").getOrElse("???")}${SEP}Login${SEP}${nowTime()}")
     Redirect(routes.Application.login).withNewSession
   }
 
