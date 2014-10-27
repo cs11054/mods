@@ -9,7 +9,6 @@ object Global extends GlobalSettings {
   }
 
   override def onStop(app: Application) {
-    MyLogger.fin()
     Manage.backup()
     println("システム終了")
   }

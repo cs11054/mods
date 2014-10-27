@@ -36,7 +36,7 @@ object Application extends Controller with myAuth with Utilities {
 
   // Subject	///////////////////////////////////////////////
   def subject(sid: Int, key: String = "date", msg: String = "") = Authenticated { implicit request =>
-    MyLogger.log(s"${request.session.get("user").get}${SEP}Subject ${sid}${SEP}${nowTime()}")
+    MyLogger.log(s"${request.session.get("user").get}${SEP}Subject ${key} ${sid}${SEP}${nowTime()}")
     Ok(views.html.subject(sid, Subjects.all(), Tasks.sortedTasksOfSbj(sid, key), sort = key))
   }
 

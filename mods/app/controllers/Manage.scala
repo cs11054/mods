@@ -82,7 +82,7 @@ object Manage extends Controller with myAuth {
         Ok(views.html.manage("DBのデータを削除しました。"))
 
       case "loadDemo" =>
-        load(SAVE_PATH + "/demo/")
+        load(SAVE_PATH + "./demo/")
         Ok(views.html.manage("デモデータを読み込みました。"))
 
       case "addUser" =>
